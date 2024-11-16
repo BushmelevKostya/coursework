@@ -1,0 +1,13 @@
+<app-navbar></app-navbar>
+<h1>Список игр</h1>
+<div class="games-container">
+  <div class="game-card" *ngFor="let game of games">
+    <img src="{{game.image}}" alt="{{game.name}}" class="game-image">
+    <div class="game-details">
+      <h2>{{game.name}}</h2>
+      <p><strong>Количество игроков:</strong> {{game.players}}</p>
+      <p><strong>Жанр:</strong> {{game.genre}}</p>
+    </div>
+    <button class="join-button">Записаться</button>
+  </div>
+</div>
