@@ -1,0 +1,42 @@
+<div class="event-form-container">
+  <h2>Создание мероприятия</h2>
+  <form (ngSubmit)="onSubmit()" #eventForm="ngForm">
+    <label>
+      Название:
+      <input type="text" name="name" [(ngModel)]="event.name" required />
+    </label>
+    <label>
+      Описание:
+      <textarea name="description" [(ngModel)]="event.description" required></textarea>
+    </label>
+    <label>
+      Дата и время:
+      <input type="datetime-local" name="date" [(ngModel)]="event.date" required />
+    </label>
+    <label>
+      Минимальное количество участников:
+      <input type="number" name="minMembers" [(ngModel)]="event.minMembers" required />
+    </label>
+    <label>
+      Максимальное количество участников:
+      <input type="number" name="maxMembers" [(ngModel)]="event.maxMembers" required />
+    </label>
+    <label>
+      ID организатора:
+      <input type="number" name="organiserId" [(ngModel)]="event.organiserId" required />
+    </label>
+    <label>
+      ID местоположения:
+      <input type="number" name="locationId" [(ngModel)]="event.locationId" required />
+    </label>
+    <label>
+      ID статуса:
+      <input type="number" name="statusId" [(ngModel)]="event.statusId" required />
+    </label>
+    <label>
+      Игра:
+      <input type="text" name="game" [(ngModel)]="event.game" required />
+    </label>
+    <button type="submit" [disabled]="eventForm.invalid">Создать</button>
+  </form>
+</div>

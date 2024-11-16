@@ -1,8 +1,13 @@
 import { Component } from '@angular/core';
+import {NgForOf} from '@angular/common';
 
 @Component({
   selector: 'app-event-list',
   templateUrl: './event-list.component.html',
+  standalone: true,
+  imports: [
+    NgForOf
+  ],
   styleUrls: ['./event-list.component.css']
 })
 export class EventListComponent {
