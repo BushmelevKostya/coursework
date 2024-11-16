@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import {NgIf, NgOptimizedImage} from '@angular/common';
-import {RouterLink} from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
@@ -15,13 +15,14 @@ import {RouterLink} from '@angular/router';
 })
 export class NavbarComponent {
   isLoggedIn = false;
-  userAvatar = 'https://via.placeholder.com/40';
+
+  constructor(private router: Router) {}
 
   login() {
     this.isLoggedIn = true;
   }
 
   goToProfile() {
-    console.log('Переход в профиль');
+    this.router.navigate(['/profile']);
   }
 }

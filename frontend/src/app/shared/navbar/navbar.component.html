@@ -4,9 +4,12 @@
     <ul class="menu">
       <li><a routerLink="/create-event">Создать мероприятие</a></li>
       <li><a routerLink="/events">Мероприятия</a></li>
-      <li *ngIf="!isLoggedIn"><button (click)="login()">Войти</button></li>
-      <li *ngIf="isLoggedIn">
-        <img class="avatar" ngSrc="../public/favicon.ico" alt="User Avatar" (click)="goToProfile()" fill/>
+      <li><a routerLink="/games">Игры</a></li>
+      <li *ngIf="!isLoggedIn">
+        <button (click)="login()">Войти</button>
+      </li>
+      <li *ngIf="isLoggedIn" class="profile-menu">
+        <img class="avatar" alt="User Avatar" (click)="goToProfile()" ngSrc="../public/favicon.ico"/>
       </li>
     </ul>
   </div>

@@ -1,20 +1,37 @@
-.event-list {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
 .event-card {
   border: 1px solid #ddd;
-  border-radius: 5px;
   padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
-
-.event-card h2 {
-  margin: 0 0 10px;
+.register-btn {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.register-btn:hover {
+  background-color: #45a049;
 }
 
-.event-card p {
-  margin: 5px 0;
+/* NavbarComponent CSS */
+.navbar {
+  background-color: #333;
+  color: white;
+  padding: 10px;
+}
+.navbar .menu {
+  list-style: none;
+  display: flex;
+  gap: 15px;
+}
+.navbar .menu li {
+  display: inline;
+}
+.navbar a {
+  color: white;
+  text-decoration: none;
 }
