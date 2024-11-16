@@ -1,0 +1,7 @@
+<div class="event-list">
+  <div *ngFor="let event of events" class="event-card">
+    <h2>{{ event.title }}</h2>
+    <p>{{ event.description }}</p>
+    <p><strong>Автор:</strong> {{ event.author }}</p>
+  </div>
+</div>

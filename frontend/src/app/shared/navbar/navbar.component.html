@@ -1,0 +1,13 @@
+<nav class="navbar">
+  <div class="container">
+    <a class="logo" routerLink="/">Eventify</a>
+    <ul class="menu">
+      <li><a routerLink="/create-event">Создать мероприятие</a></li>
+      <li><a routerLink="/events">Мероприятия</a></li>
+      <li *ngIf="!isLoggedIn"><button (click)="login()">Войти</button></li>
+      <li *ngIf="isLoggedIn">
+        <img class="avatar" ngSrc="../public/favicon.ico" alt="User Avatar" (click)="goToProfile()" fill/>
+      </li>
+    </ul>
+  </div>
+</nav>

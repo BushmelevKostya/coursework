@@ -1,0 +1,46 @@
+.navbar {
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+  padding: 10px 20px;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  text-decoration: none;
+}
+
+.menu {
+  list-style: none;
+  display: flex;
+  gap: 15px;
+  margin: 0;
+  padding: 0;
+}
+
+.menu li {
+  display: inline-block;
+}
+
+.menu a, .menu button {
+  text-decoration: none;
+  font-size: 16px;
+  color: #333;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+}
