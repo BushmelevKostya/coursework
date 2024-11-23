@@ -1,19 +1,19 @@
 volumes:
-  dev-db-volume: {}
+  postgres_data:
   keycloak-db-volume: {}
 
 services:
-  dev-pg:
-    container_name: db_pg_is
-    image: bitnami/postgresql:17.0.0
+  postgres:
+    image: postgres:latest
+    container_name: postgres_container
     environment:
-      POSTGRESQL_DATABASE: coursework
-      POSTGRESQL_USERNAME: Kostya
-      POSTGRESQL_PASSWORD: Kostya
-    volumes:
-      - dev-db-volume:/bitnami/postgresql
+      POSTGRES_USER: coursework
+      POSTGRES_PASSWORD: coursework
+      POSTGRES_DB: coursework
     ports:
-      - '5432:5432'
+      - '5433:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
   keycloak-db:
     container_name: keycloak-db
