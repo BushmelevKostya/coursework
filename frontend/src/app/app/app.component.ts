@@ -20,13 +20,18 @@ export class AppComponent {
   }
 
   private initKeycloak() {
+    if (typeof window === 'undefined') {
+      console.error("Keycloak cannot be initialized on the server side.");
+      return;
+    }
+
     try {
       this.keycloakService.init({
         config: keycloakConfig,
         initOptions: {
           onLoad: 'login-required',
           checkLoginIframe: false,
-          redirectUri: 'http://localhost:4200/home',
+          redirectUri: 'http://localhost:4200',
         },
         loadUserProfileAtStartUp: true
       });

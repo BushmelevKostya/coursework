@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, NgForm} from '@angular/forms';
 import {NavbarComponent} from '../../shared/navbar/navbar.component';
+import {HttpClient, HttpClientModule} from '@angular/common/http';
 
 @Component({
   selector: 'app-event-form',
@@ -8,11 +9,16 @@ import {NavbarComponent} from '../../shared/navbar/navbar.component';
   standalone: true,
   imports: [
     FormsModule,
-    NavbarComponent
+    NavbarComponent,
+    HttpClientModule
   ],
-  styleUrls: ['./event-form.component.css']
+  styleUrls: ['./event-form.component.css'],
+  providers: [HttpClientModule]
 })
 export class EventFormComponent {
+  constructor(private http: HttpClient) {
+  }
+
   event = {
     name: '',
     description: '',
@@ -25,7 +31,16 @@ export class EventFormComponent {
     game: ''
   };
 
-  onSubmit() {
-    console.log('Мероприятие создано:', this.event);
+  onSubmit(form: NgForm) {
+    const url = 'http://localhost:2584/api/events/create';
+    this.http.post(url, form.value).subscribe(
+      response => {
+        console.log(response)
+        console.log("Event was created!")
+      },
+      error => {
+        console.error("Error creating movie", error)
+      }
+    )
   }
 }
