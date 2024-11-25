@@ -1,0 +1,54 @@
+.navbar {
+  background-color: #333;
+  padding: 1rem;
+  color: #fff;
+  font-family: "Days O", sans-serif;
+  font-weight: bold;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  color: #ff6347;
+  font-size: 1.5rem;
+  text-decoration: none;
+}
+
+.menu {
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+}
+
+.menu li {
+  display: inline;
+}
+
+.menu a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.menu button {
+  background-color: #ff6347;
+  border: none;
+  color: white;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.profile-menu img {
+  border-radius: 50%;
+  width: 40px;
+  cursor: pointer;
+  border: 2px solid #fff;
+  transition: transform 0.2s;
+}
+
+.profile-menu img:hover {
+  transform: scale(1.1);
+}

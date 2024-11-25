@@ -1,0 +1,16 @@
+<nav class="navbar">
+  <div class="container">
+    <a class="logo" routerLink="/">GoodGames</a>
+    <ul class="menu">
+      <li><a routerLink="/create-event">Создать мероприятие</a></li>
+      <li><a routerLink="/events">Мероприятия</a></li>
+      <li><a routerLink="/games">Игры</a></li>
+      <li class="profile-menu">
+        <img class="avatar" alt="User Avatar" (click)="goToProfile()" src="assets/images/p1.jpg"/>
+      </li>
+      <li>
+      <button (click)="logout()">Выйти</button>
+      </li>
+    </ul>
+  </div>
+</nav>
