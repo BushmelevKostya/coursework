@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import {FormsModule, NgForm} from '@angular/forms';
 import {NavbarComponent} from '../../shared/navbar/navbar.component';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
+import {RequestService} from '../../service/request.service';
 
 @Component({
   selector: 'app-event-form',
@@ -13,10 +14,10 @@ import {HttpClient, HttpClientModule} from '@angular/common/http';
     HttpClientModule
   ],
   styleUrls: ['./event-form.component.css'],
-  providers: [HttpClientModule]
+  providers: [HttpClientModule, RequestService]
 })
 export class EventFormComponent {
-  constructor(private http: HttpClient) {
+  constructor(private requestService: RequestService) {
   }
 
   event = {
@@ -32,15 +33,6 @@ export class EventFormComponent {
   };
 
   onSubmit(form: NgForm) {
-    const url = 'http://localhost:2584/api/events/create';
-    this.http.post(url, form.value).subscribe(
-      response => {
-        console.log(response)
-        console.log("Event was created!")
-      },
-      error => {
-        console.error("Error creating movie", error)
-      }
-    )
+    this.requestService.createGameEvent(form);
   }
 }

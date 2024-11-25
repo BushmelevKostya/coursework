@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import {RouterOutlet} from '@angular/router';
-import {keycloakConfig} from '../keycloak.config';
-import {KeycloakService, KeycloakAngularModule} from 'keycloak-angular';
+import {KeycloakAngularModule} from 'keycloak-angular';
+import {HTTP_INTERCEPTORS} from '@angular/common/http';
+import {AppKeycloakService} from '../keycloak.service';
 
 @Component({
   selector: 'app-app',
@@ -12,31 +13,25 @@ import {KeycloakService, KeycloakAngularModule} from 'keycloak-angular';
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
-  providers: [KeycloakService]
+  providers: [
+    AppKeycloakService,
+  ]
 })
 export class AppComponent {
-  constructor(private keycloakService: KeycloakService) {
+  constructor(private keycloakService: AppKeycloakService) {
     this.initKeycloak();
   }
 
-  private initKeycloak() {
-    if (typeof window === 'undefined') {
-      console.error("Keycloak cannot be initialized on the server side.");
-      return;
-    }
-
+  private async initKeycloak() {
     try {
-      this.keycloakService.init({
-        config: keycloakConfig,
-        initOptions: {
-          onLoad: 'login-required',
-          checkLoginIframe: false,
-          redirectUri: 'http://localhost:4200',
-        },
-        loadUserProfileAtStartUp: true
-      });
+      const isInitialized = await this.keycloakService.initKeycloak();
+      if (isInitialized) {
+        console.log('Keycloak initialized successfully');
+      } else {
+        console.error('Keycloak initialization failed');
+      }
     } catch (error) {
-      console.error("Error during Keycloak initialization", error);
+      console.error('Error during Keycloak initialization', error);
     }
   }
 }

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import {NgIf, NgOptimizedImage} from '@angular/common';
 import {Router, RouterLink} from '@angular/router';
+import {AppKeycloakService} from '../../keycloak.service';
 
 @Component({
   selector: 'app-navbar',
@@ -14,12 +15,16 @@ import {Router, RouterLink} from '@angular/router';
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent {
-  isLoggedIn = false;
+  constructor(private router: Router, private keycloakService: AppKeycloakService) {}
 
-  constructor(private router: Router) {}
+  isLoggedIn: boolean | undefined
 
-  login() {
-    this.isLoggedIn = true;
+  ngOnInit() {
+    this.isLoggedIn = this.keycloakService.isAuthenticated()
+  }
+
+  logout() {
+    this.keycloakService.logout();
   }
 
   goToProfile() {

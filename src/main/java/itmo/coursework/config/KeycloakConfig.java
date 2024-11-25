@@ -1,5 +1,7 @@
 package itmo.coursework.config;
 
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -11,12 +13,11 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.web.SecurityFilterChain;
 
-import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class KeycloakConfig {
+	
 	@Bean
 	public SecurityFilterChain securityFilterChainConfig(
 			HttpSecurity http, Converter<Jwt, AbstractAuthenticationToken> jwtAuthenticationConverter)
@@ -33,7 +34,7 @@ public class KeycloakConfig {
 				.csrf(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(
 						httpRequests -> httpRequests
-								.requestMatchers("/public/**").permitAll()
+								.requestMatchers("/api/v1/ws").permitAll()
 								.anyRequest().authenticated()
 				)
 				.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(STATELESS))
@@ -45,5 +46,4 @@ public class KeycloakConfig {
 		
 		return http.build();
 	}
-
 }

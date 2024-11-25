@@ -12,7 +12,7 @@ public class EventController {
 	@Autowired
 	private GameEventRepository gameEventRepository;
 	
-	@GetMapping("/create")
+	@PostMapping("/create")
 	public GameEvent createEvent(@RequestBody @Valid GameEvent gameEvent) {
 		System.out.println(gameEvent);
 		GameEvent ge = gameEventRepository.save(gameEvent);
