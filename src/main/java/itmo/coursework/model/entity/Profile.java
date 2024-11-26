@@ -12,10 +12,15 @@ public class Profile {
 	private String name;
 	private String email;
 	private String icon;
-	private String password;
 	
-	@OneToMany(mappedBy = "profile")
-	private Set<FavouriteGames> favouriteGames;
+	@ManyToMany
+	@JoinTable(
+		name = "favourite_games",
+		joinColumns = @JoinColumn(
+			name = "profile_id"),
+		inverseJoinColumns = @JoinColumn(
+			name = "game_id"))
+	private Set<Game> favouriteGames;
 	
 	@OneToMany(mappedBy = "profile")
 	private Set<GameHistory> gameHistories;

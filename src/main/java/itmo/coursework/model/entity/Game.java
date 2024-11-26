@@ -14,8 +14,8 @@ public class Game {
 	private int minPlayers;
 	private int maxPlayers;
 	
-	@OneToMany(mappedBy = "game")
-	private Set<FavouriteGames> favouriteGames;
+	@ManyToMany(mappedBy = "favouriteGames")
+	private Set<Profile> profiles;
 	
 	@OneToMany(mappedBy = "game")
 	private Set<GameEvent> gameEvents;
