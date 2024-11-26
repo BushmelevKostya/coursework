@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import {FormsModule, NgForm} from '@angular/forms';
 import {NavbarComponent} from '../../shared/navbar/navbar.component';
-import {HttpClient, HttpClientModule} from '@angular/common/http';
+import {HttpClient, HttpClientModule, HttpHeaders} from '@angular/common/http';
 import {RequestService} from '../../service/request.service';
 
 @Component({
@@ -17,7 +17,7 @@ import {RequestService} from '../../service/request.service';
   providers: [HttpClientModule, RequestService]
 })
 export class EventFormComponent {
-  constructor(private requestService: RequestService) {
+  constructor(private http: HttpClient) {
   }
 
   event = {
@@ -33,6 +33,28 @@ export class EventFormComponent {
   };
 
   onSubmit(form: NgForm) {
-    this.requestService.createGameEvent(form);
+    const url = 'http://localhost:2585/api/events/create';
+    // const token = localStorage.getItem('token');
+    //
+    // const headers = new HttpHeaders({
+    //     Authorization: `Bearer ${token}`,
+    //     'Content-Type': 'application/json',
+    // });
+
+    // console.log(headers);
+    // const httpOptions = {
+    //   headers: new HttpHeaders({
+    //     'Content-Type': 'application/json',
+    //   })
+    // };
+    this.http.post(url, form.value).subscribe(
+      response => {
+        console.log(response);
+        console.log("Event was created!");
+      },
+      error => {
+        console.error(error.message);
+      }
+    );
   }
 }
