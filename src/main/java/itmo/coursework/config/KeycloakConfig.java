@@ -13,28 +13,19 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.web.SecurityFilterChain;
 
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class KeycloakConfig {
-	
 	@Bean
 	public SecurityFilterChain securityFilterChainConfig(
 			HttpSecurity http, Converter<Jwt, AbstractAuthenticationToken> jwtAuthenticationConverter)
 			throws Exception {
 		http
-				.cors(cors -> cors.configurationSource(request -> {
-					var corsConfiguration = new org.springframework.web.cors.CorsConfiguration();
-					corsConfiguration.addAllowedOrigin("http://localhost:4200");
-					corsConfiguration.addAllowedMethod("*");
-					corsConfiguration.addAllowedHeader("*");
-					corsConfiguration.setAllowCredentials(true);
-					return corsConfiguration;
-				}))
 				.csrf(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(
 						httpRequests -> httpRequests
-								.requestMatchers("/api/v1/ws").permitAll()
 								.anyRequest().authenticated()
 				)
 				.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(STATELESS))
@@ -43,7 +34,6 @@ public class KeycloakConfig {
 								jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(jwtAuthenticationConverter)
 						)
 				);
-		
 		return http.build();
 	}
 }
