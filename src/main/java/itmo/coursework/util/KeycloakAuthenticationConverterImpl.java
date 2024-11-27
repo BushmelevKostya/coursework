@@ -9,15 +9,13 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
 
+
 @Component
 public class KeycloakAuthenticationConverterImpl implements Converter<Jwt, AbstractAuthenticationToken> {
-	
 	private final Converter<Jwt, Collection<? extends GrantedAuthority>> jwtToGAConverter;
-	
 	public KeycloakAuthenticationConverterImpl() {
 		this.jwtToGAConverter = new KeycloakJwtGrantedAuthoritiesConverterImpl();
 	}
-	
 	@Override
 	public AbstractAuthenticationToken convert(Jwt jwt) {
 		final var authorities = jwtToGAConverter.convert(jwt);
