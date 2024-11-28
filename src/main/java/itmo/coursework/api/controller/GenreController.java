@@ -42,6 +42,4 @@ public class GenreController {
     public GenreResponseDTO updateGenre(@PathVariable Long id, @RequestBody GenreMutationDTO genreMutationDTO) {
         return genreService.updateGenre(id, genreMutationDTO);
     }
-
-
 }

@@ -1,9 +1,9 @@
 package itmo.coursework.model.repository;
 
-import itmo.coursework.model.entity.GameEvent;
+import itmo.coursework.model.entity.Game;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface GameEventRepository extends JpaRepository<GameEvent, Integer> {
+public interface GameRepository extends JpaRepository<Game, Long> {
 }
