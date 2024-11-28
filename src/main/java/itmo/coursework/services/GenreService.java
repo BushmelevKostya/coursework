@@ -46,8 +46,10 @@ public class GenreService {
     //TODO admin method
     @Transactional
     public GenreResponseDTO updateGenre(Long id, GenreMutationDTO genreMutationDTO) {
+        System.out.println("fe");
         Genre genre = genreRepository.findById(id)
                 .orElseThrow(() -> new GenreExistenceException("Genre с id=" + id + " не существует"));
+        System.out.println("apa");
         genre.setName(genreMutationDTO.name());
         Genre updatedGenre = genreRepository.save(genre);
 

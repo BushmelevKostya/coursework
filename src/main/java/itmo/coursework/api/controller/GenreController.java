@@ -1,4 +1,4 @@
-package itmo.coursework.controller;
+package itmo.coursework.api.controller;
 
 
 import itmo.coursework.dto.GenreMutationDTO;

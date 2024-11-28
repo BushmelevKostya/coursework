@@ -1,4 +1,4 @@
-package itmo.coursework.controller;
+package itmo.coursework.api.controller;
 
 public class UserController {
 }
