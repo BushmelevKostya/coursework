@@ -1,4 +1,4 @@
-package itmo.coursework.api.controller;
+package itmo.coursework.controller;
 
 import itmo.coursework.model.entity.GameEvent;
 import itmo.coursework.model.repository.GameEventRepository;
