@@ -56,7 +56,7 @@ public class GameService {
 
     //TODO подумать над логикой удаления
 
-    private GameResponseDTO getDTOFromGame(Game game) {
+    protected GameResponseDTO getDTOFromGame(Game game) {
         return new GameResponseDTO(
                 game.getId(),
                 game.getName(),
@@ -66,7 +66,7 @@ public class GameService {
         );
     }
 
-    private Game getGameFromDTO(GameMutationDTO gameMutationDTO) {
+    protected Game getGameFromDTO(GameMutationDTO gameMutationDTO) {
         Game game = new Game();
         game.setName(gameMutationDTO.name());
         game.setDescription(gameMutationDTO.description());

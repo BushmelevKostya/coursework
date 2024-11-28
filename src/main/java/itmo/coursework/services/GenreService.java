@@ -42,6 +42,7 @@ public class GenreService {
         return getDTOFromGenre(genre);
     }
 
+
     //TODO admin method
     @Transactional
     public GenreResponseDTO updateGenre(Long id, GenreMutationDTO genreMutationDTO) {
@@ -56,7 +57,7 @@ public class GenreService {
 
     //TODO подумать над логикой удаления
 
-    private GenreResponseDTO getDTOFromGenre(Genre genre) {
+    protected GenreResponseDTO getDTOFromGenre(Genre genre) {
         return new GenreResponseDTO(genre.getId(), genre.getName());
     }
 
