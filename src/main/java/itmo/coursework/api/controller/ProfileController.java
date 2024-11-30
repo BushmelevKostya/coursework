@@ -5,6 +5,7 @@ import itmo.coursework.dto.ProfileResponseDTO;
 import itmo.coursework.services.ProfileService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,6 +28,13 @@ public class ProfileController {
     @GetMapping("/{id}")
     public ProfileResponseDTO findProfileById(@PathVariable Long id) {
         return profileService.getProfileById(id);
+    }
+
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public ProfileResponseDTO createProfile(@RequestBody ProfileMutationDTO profileMutationDTO) {
+        return profileService.createProfile(profileMutationDTO);
     }
 
 
