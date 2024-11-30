@@ -38,7 +38,7 @@ public class ProfileController {
     }
 
 
-    @PostMapping
+    @PutMapping("/{id}")
     public ProfileResponseDTO updateProfile(@PathVariable Long id, @RequestBody ProfileMutationDTO profileMutationDTO){
         return profileService.updateProfile(id, profileMutationDTO);
     }
