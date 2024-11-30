@@ -27,13 +27,19 @@ public class GameGenreService {
     private final GenreRepository genreRepository;
     private final GameRepository gameRepository;
 
-    public GameGenreService(GameGenreRepository gameGenreRepository, GameService gameService, GenreService genreService, GenreRepository genreRepository, GameRepository gameRepository) {
+    public GameGenreService(
+            GameGenreRepository gameGenreRepository,
+            GameService gameService,
+            GenreService genreService,
+            GenreRepository genreRepository,
+            GameRepository gameRepository) {
         this.gameGenreRepository = gameGenreRepository;
         this.gameService = gameService;
         this.genreService = genreService;
         this.genreRepository = genreRepository;
         this.gameRepository = gameRepository;
     }
+
 
     public Page<GameGenreResponseDTO> getAllGameGenres(Pageable pageable) {
         return gameGenreRepository.findAll(pageable).map(this::getDTOFromGameGenre);
@@ -100,6 +106,7 @@ public class GameGenreService {
                 .orElseThrow(() -> new GenreExistenceException("Genre с id=" + gameGenreMutationDTO.genreId() + " не существует"));
         gameGenre.setGame(game);
         gameGenre.setGenre(genre);
+
         return gameGenre;
     }
 }

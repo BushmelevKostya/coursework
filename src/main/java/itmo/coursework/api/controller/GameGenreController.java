@@ -39,7 +39,7 @@ public class GameGenreController {
 
 
     @PutMapping("/{id}")
-    public GameGenreResponseDTO udateGameGenre(@PathVariable Long id, @RequestBody GameGenreMutationDTO gameGenreMutationDTO) {
+    public GameGenreResponseDTO updateGameGenre(@PathVariable Long id, @RequestBody GameGenreMutationDTO gameGenreMutationDTO) {
         return gameGenreService.updateGameGenre(id, gameGenreMutationDTO);
     }
 }

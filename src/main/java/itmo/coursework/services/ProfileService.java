@@ -58,7 +58,7 @@ public class ProfileService {
 
     //TODO подумать над логикой удаления
 
-    private ProfileResponseDTO getDTOFromProfile(Profile profile) {
+    protected ProfileResponseDTO getDTOFromProfile(Profile profile) {
         return new ProfileResponseDTO(
                 profile.getId(),
                 profile.getName(),
@@ -68,7 +68,7 @@ public class ProfileService {
         );
     }
 
-    private Profile getProfileFromDTO(ProfileMutationDTO profileMutationDTO) {
+    protected Profile getProfileFromDTO(ProfileMutationDTO profileMutationDTO) {
         Profile profile = new Profile();
         profile.setName(profileMutationDTO.name());
         profile.setEmail(profileMutationDTO.email());
