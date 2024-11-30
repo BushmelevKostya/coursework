@@ -38,6 +38,7 @@ public class GenreController {
         return genreService.createGenre(genreMutationDTO);
     }
 
+
     @PutMapping("/{id}")
     public GenreResponseDTO updateGenre(@PathVariable Long id, @RequestBody GenreMutationDTO genreMutationDTO) {
         return genreService.updateGenre(id, genreMutationDTO);
