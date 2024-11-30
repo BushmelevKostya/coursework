@@ -40,6 +40,7 @@ public class GameService {
         return getDTOFromGame(game);
     }
 
+
     //TODO admin method
     @Transactional
     public GameResponseDTO updateGame(Long id, GameMutationDTO gameMutationDTO) {
