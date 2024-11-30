@@ -72,7 +72,7 @@ public class GameHistoryService {
         gameHistory.setEventName(gameHistoryMutationDTO.eventName());
         gameHistory.setGameResult(gameHistoryMutationDTO.gameResult());
         gameHistory.setDateEvent(gameHistoryMutationDTO.dateEvent());
-        
+
         GameHistory updatedGameHistory = gameHistoryRepository.save(gameHistory);
         return getDTOFromGameHistory(updatedGameHistory);
     }
@@ -98,7 +98,7 @@ public class GameHistoryService {
                         .orElseThrow(() -> new GameHistoryExistenceException(
                                 "Profile с id="
                                 + gameHistoryMutationDTO.profileId()
-                                + "не существует"
+                                + " не существует"
                         ));
         gameHistory.setProfile(profile);
         gameHistory.setEventName(gameHistoryMutationDTO.eventName());
