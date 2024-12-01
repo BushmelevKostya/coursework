@@ -94,7 +94,7 @@ public class GameEventService {
         return getDTOFromGameEvent(updatedGameEvent);
     }
 
-    private GameEventResponseDTO getDTOFromGameEvent(GameEvent gameEvent) {
+    protected GameEventResponseDTO getDTOFromGameEvent(GameEvent gameEvent) {
         if (gameEvent.getGame() == null) {
             throw new GameExistenceException("Game не существует");
         }
@@ -130,8 +130,9 @@ public class GameEventService {
         );
     }
 
-    private GameEvent getGameEventFromDTO(GameEventMutationDTO gameEventMutationDTO) {
+    protected GameEvent getGameEventFromDTO(GameEventMutationDTO gameEventMutationDTO) {
         GameEvent gameEvent = new GameEvent();
+        //TODO date
         Profile organiser = profileRepository.findById(gameEventMutationDTO.organizerId())
                 .orElseThrow(() -> new ProfileExistenceException(
                         "Profile огранизатора с id="
