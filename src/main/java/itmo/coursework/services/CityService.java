@@ -35,9 +35,7 @@ public class CityService {
     //TODO admin method
     @Transactional
     public CityResponseDTO createCity(CityMutationDTO cityMutationDTO) {
-        City city = new City();
-        city = cityRepository.save(city);
-
+        City city = cityRepository.save(getCityFromDTO(cityMutationDTO));
         return getDTOFromCity(city);
     }
 
