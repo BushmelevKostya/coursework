@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/profile")
-public class ProfileController {
+public class UserController {
 
     private final ProfileService profileService;
 
-    public ProfileController(ProfileService profileService) {
+    public UserController(ProfileService profileService) {
         this.profileService = profileService;
     }
 

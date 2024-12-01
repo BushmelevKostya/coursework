@@ -1,10 +1,20 @@
 package itmo.coursework.model.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 import java.util.Set;
 
+@Getter
+@Setter
 @Entity
+@Table(name = "gameEvents")
+@NoArgsConstructor
+@AllArgsConstructor
 public class GameEvent {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,7 +28,9 @@ public class GameEvent {
 	private Long winnerId;
 	private Long organiserId;
 	private Long locationId;
-	private Long statusId;
+
+	@ManyToOne
+	private EventStatus statusId;
 	
 	@ManyToOne
 	@JoinColumn(name = "gameId")
