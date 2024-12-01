@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/v1/gamegenre")
+@RequestMapping("/api/v1/gamegenre")
 public class GameGenreController {
 
     private final GameGenreService gameGenreService;

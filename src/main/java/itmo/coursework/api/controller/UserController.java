@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/v1/profile")
+@RequestMapping("/api/v1/profile")
 public class UserController {
 
     private final ProfileService profileService;

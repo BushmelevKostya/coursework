@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/v1/city")
+@RequestMapping("/api/v1/city")
 public class CityController {
 
     private final CityService cityService;
