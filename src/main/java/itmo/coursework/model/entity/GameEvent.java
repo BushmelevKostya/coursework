@@ -25,12 +25,15 @@ public class GameEvent {
 	private LocalDateTime date;
 	private int minMembers;
 	private int maxMembers;
-	private Long winnerId;
-	private Long organiserId;
-	private Long locationId;
+	@OneToOne
+	private Profile winner;
+	@OneToOne
+	private Profile organiser;
+	@ManyToOne
+	private Location location;
 
 	@ManyToOne
-	private EventStatus statusId;
+	private EventStatus status;
 	
 	@ManyToOne
 	@JoinColumn(name = "gameId")
