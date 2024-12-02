@@ -132,7 +132,6 @@ public class GameEventService {
 
     protected GameEvent getGameEventFromDTO(GameEventMutationDTO gameEventMutationDTO) {
         GameEvent gameEvent = new GameEvent();
-        //TODO date
         Profile organiser = profileRepository.findById(gameEventMutationDTO.organizerId())
                 .orElseThrow(() -> new ProfileExistenceException(
                         "Profile огранизатора с id="
