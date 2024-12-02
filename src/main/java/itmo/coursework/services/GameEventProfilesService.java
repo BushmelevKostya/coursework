@@ -67,6 +67,7 @@ public class GameEventProfilesService {
                 .orElseThrow(() -> new ProfileExistenceException("Profile с id=" + gameEventProfilesMutationDTO.profileId() + " не сущетсвует"));
         gameEventProfiles.setProfile(profile);
         gameEventProfiles.setGameEvent(gameEvent);
+        gameEventProfiles = gameEventProfilesRepository.save(gameEventProfiles);
 
         return getDTOFromGameEventProfiles(gameEventProfiles);
     }
