@@ -1,43 +1,40 @@
 volumes:
-  postgres_data:
+  dev-db-volume: {}
   keycloak-db-volume: {}
-
 services:
-  postgres:
-    image: postgres:latest
-    container_name: postgres_container
-    environment:
-      POSTGRES_USER: coursework
-      POSTGRES_PASSWORD: coursework
-      POSTGRES_DB: coursework
-    ports:
-      - '5433:5432'
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
-  keycloak-db:
-    container_name: keycloak-db
+  dev-pg:
+    container_name: db_pg_is_course
     image: bitnami/postgresql:17.0.0
     environment:
-      POSTGRESQL_DATABASE: keycloak-db
+      POSTGRESQL_DATABASE: lab1
+      POSTGRESQL_USERNAME: mitrian
+      POSTGRESQL_PASSWORD: mitrian
+    volumes:
+      - dev-db-volume:/bitnami/postgresql
+    ports:
+      - '5432:5432'
+  keycloak-db:
+    container_name: keycloak-db-course
+    image: bitnami/postgresql:17.0.0
+    environment:
+      POSTGRESQL_DATABASE: keycloak-db-course
       POSTGRESQL_USERNAME: keycloak-user
       POSTGRESQL_PASSWORD: keycloak-password
     volumes:
       - keycloak-db-volume:/bitnami/postgresql
-
   keycloak-idp:
-    container_name: keycloak-idp
+    container_name: keycloak-idp-course
     depends_on:
       - keycloak-db
     image: bitnami/keycloak:23.0.4
     environment:
-      KEYCLOAK_ADMIN: Kostya
+      KEYCLOAK_ADMIN: mitrian
       KEYCLOAK_ADMIN_PASSWORD: dev
       KEYCLOAK_HTTP_PORT: 9000
       KEYCLOAK_HTTPS_PORT: 9443
-      KEYCLOAK_DATABASE_HOST: keycloak-db
+      KEYCLOAK_DATABASE_HOST: keycloak-db-course
       KEYCLOAK_DATABASE_PORT: 5432
-      KEYCLOAK_DATABASE_NAME: keycloak-db
+      KEYCLOAK_DATABASE_NAME: keycloak-db-course
       KEYCLOAK_DATABASE_SCHEMA: public
       KEYCLOAK_DATABASE_USER: keycloak-user
       KEYCLOAK_DATABASE_PASSWORD: keycloak-password
