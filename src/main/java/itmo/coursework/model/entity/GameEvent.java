@@ -1,12 +1,14 @@
 package itmo.coursework.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Set;
 
 @Getter
@@ -22,12 +24,16 @@ public class GameEvent {
 	
 	private String name;
 	private String description;
-	private LocalDateTime date;
+	private ZonedDateTime date;
 	private int minMembers;
+	@Positive
+	private long currentMembers;
 	private int maxMembers;
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "winnerId")
 	private Profile winner;
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "organiserId")
 	private Profile organiser;
 	@ManyToOne(cascade = CascadeType.ALL)
 	private Location location;
