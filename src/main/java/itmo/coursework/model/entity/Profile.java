@@ -1,9 +1,19 @@
 package itmo.coursework.model.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.util.Set;
 
+@Getter
+@Setter
 @Entity
+@Table(name = "profile")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Profile {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

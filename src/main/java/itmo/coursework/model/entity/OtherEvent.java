@@ -1,10 +1,20 @@
 package itmo.coursework.model.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 import java.util.Set;
 
+@Getter
+@Setter
 @Entity
+@Table(name = "otherEvents")
+@NoArgsConstructor
+@AllArgsConstructor
 public class OtherEvent {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,7 +25,6 @@ public class OtherEvent {
 	private LocalDateTime date;
 	
 	@ManyToOne
-	@JoinColumn(name = "locationId")
 	private Location location;
 	
 	@OneToMany(mappedBy = "otherEvent")
