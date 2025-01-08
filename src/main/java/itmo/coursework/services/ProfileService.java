@@ -39,7 +39,6 @@ public class ProfileService {
     public ProfileResponseDTO createProfile(ProfileMutationDTO profileMutationDTO) {
         Profile profile = getProfileFromDTO(profileMutationDTO);
         profile = profileRepository.save(profile);
-
         return getDTOFromProfile(profile);
     }
 

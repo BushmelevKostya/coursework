@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 
 @Service
@@ -120,6 +122,35 @@ public class GameEventService {
         if (Objects.equals(gameEvent.getOrganiser().getName(), securityService.findUserName())) {
             gameEventRepository.deleteById(id);
         }
+    }
+
+    public Page<GameEventResponseDTO> filterGameEvents(
+            String name,
+            String description,
+            String gameName,
+            String locationName,
+            String statusName,
+            Integer minMembers,
+            Integer maxMembers,
+//            LocalDateTime startDate,
+//            ZonedDateTime endDate,
+            Pageable pageable) {
+
+        // Вызов репозитория для фильтрации с нужными параметрами
+        Page<GameEvent> gameEventsPage = gameEventRepository.findByFilters(
+                name,
+                description,
+                gameName,
+                locationName,
+                statusName,
+                minMembers,
+                maxMembers,
+//                startDate,
+//                endDate,
+                pageable);
+
+        // Преобразуем Page<GameEvent> в Page<GameEventResponseDTO>
+        return gameEventsPage.map(this::getDTOFromGameEvent);
     }
 
     protected GameEventResponseDTO getDTOFromGameEvent(GameEvent gameEvent) {

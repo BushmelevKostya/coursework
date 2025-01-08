@@ -9,6 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
 @RestController
 @RequestMapping("/api/v1/gameevent")
 public class GameEventController {
@@ -50,5 +54,40 @@ public class GameEventController {
     public ResponseEntity<Void> deleteGameEvent(@PathVariable Long id) {
         gameEventService.deleteGameEvent(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/filter")
+    public Page<GameEventResponseDTO> filterGameEvents(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "description", required = false) String description,
+            @RequestParam(value = "game.name", required = false) String gameName,
+            @RequestParam(value = "location.address", required = false) String locationName,
+            @RequestParam(value = "status.status", required = false) String statusName,
+            @RequestParam(value = "minMembers", required = false) Integer minMembers,
+            @RequestParam(value = "maxMembers", required = false) Integer maxMembers,
+            @RequestParam(value = "startDate", required = false) String startDate,
+            @RequestParam(value = "endDate", required = false) String endDate,
+            Pageable pageable) {
+//
+//        LocalDateTime start = null;
+//        LocalDateTime end = null;
+//
+//        if (startDate != null) {
+//            start = ZonedDateTime.parse(startDate, DateTimeFormatter.ISO_ZONED_DATE_TIME).toLocalDateTime();
+//        }
+//        if (endDate != null) {
+//            end = ZonedDateTime.parse(endDate, DateTimeFormatter.ISO_ZONED_DATE_TIME).toLocalDateTime();
+//        }
+
+        // Вызов сервиса для фильтрации
+        return gameEventService.filterGameEvents(
+                name,
+                description,
+                gameName,
+                locationName, statusName,
+                minMembers, maxMembers,
+//                start,
+//                end,
+                pageable);
     }
 }
