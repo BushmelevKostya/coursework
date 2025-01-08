@@ -100,7 +100,7 @@ public class GameEventService {
         return getDTOFromGameEvent(updatedGameEvent);
     }
 
-    protected GameEventResponseDTO getDTOFromGameEvent(GameEvent gameEvent) {
+    public GameEventResponseDTO getDTOFromGameEvent(GameEvent gameEvent) {
         if (gameEvent.getGame() == null) {
             throw new GameExistenceException("Game не существует");
         }
