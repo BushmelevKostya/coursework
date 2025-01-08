@@ -7,6 +7,7 @@ import itmo.coursework.model.entity.Genre;
 import itmo.coursework.model.repository.GenreRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,8 +34,8 @@ public class GenreService {
     }
 
 
-    //TODO admin method
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public GenreResponseDTO createGenre(GenreMutationDTO genreMutationDTO) {
         Genre genre = getGenreFromDTO(genreMutationDTO);
         genre = genreRepository.save(genre);
@@ -43,8 +44,8 @@ public class GenreService {
     }
 
 
-    //TODO admin method
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public GenreResponseDTO updateGenre(Long id, GenreMutationDTO genreMutationDTO) {
         Genre genre = genreRepository.findById(id)
                 .orElseThrow(() -> new GenreExistenceException("Genre с id=" + id + " не существует"));
@@ -55,7 +56,11 @@ public class GenreService {
     }
 
 
-    //TODO подумать над логикой удаления
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteGenre(Long id) {
+        genreRepository.deleteById(id);
+    }
 
     protected GenreResponseDTO getDTOFromGenre(Genre genre) {
         return new GenreResponseDTO(genre.getId(), genre.getName());

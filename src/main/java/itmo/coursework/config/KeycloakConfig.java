@@ -40,19 +40,4 @@ public class KeycloakConfig {
 				);
 		return http.build();
 	}
-
-	@Bean
-	public Keycloak keycloakAdminClient(
-			@Value("http://keycloak-idpp:9000") String serverUrl,
-			@Value("devrealm") String realm,
-			@Value("admin-cli") String adminClientId,
-			@Value("7Zr8ubQkeosgNLegsiDJ7xKasmHReuKP") String adminClientSecret) {
-		return KeycloakBuilder.builder()
-				.serverUrl(serverUrl)
-				.realm(realm)
-				.grantType(OAuth2Constants.CLIENT_CREDENTIALS)
-				.clientId(adminClientId)
-				.clientSecret(adminClientSecret)
-				.build();
-	}
 }

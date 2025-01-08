@@ -11,6 +11,7 @@ import itmo.coursework.model.repository.DistrictRepository;
 import itmo.coursework.model.repository.LocationRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,8 +45,8 @@ public class LocationService {
     }
 
 
-    //TODO admin method
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public LocationResponseDTO createLocation(LocationMutationDTO locationMutationDTO) {
         Location location = getLocationFromDTO(locationMutationDTO);
         location = locationRepository.save(location);
@@ -54,8 +55,8 @@ public class LocationService {
     }
 
 
-    //TODO admin method
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public LocationResponseDTO updateLocation(Long id, LocationMutationDTO locationMutationDTO) {
         Location location = locationRepository.findById(id)
                 .orElseThrow(() -> new LocationExistenceException(
@@ -73,6 +74,12 @@ public class LocationService {
         location.setAddress(locationMutationDTO.address());
         Location updatedLocation = locationRepository.save(location);
         return getDTOFromLocation(updatedLocation);
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteLocation(Long id) {
+        locationRepository.deleteById(id);
     }
 
     protected LocationResponseDTO getDTOFromLocation(Location location) {

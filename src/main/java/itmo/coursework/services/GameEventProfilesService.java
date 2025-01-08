@@ -46,7 +46,6 @@ public class GameEventProfilesService {
     }
 
 
-    //TODO admin method
     @Transactional
     public GameEventProfilesResponseDTO createGameEventProfile(GameEventProfilesMutationDTO gameEventProfilesMutationDTO) {
         GameEventProfiles gameEventProfiles = getGameEventProfilesFromDTO(gameEventProfilesMutationDTO);
@@ -56,7 +55,6 @@ public class GameEventProfilesService {
     }
 
 
-    //TODO admin method
     @Transactional
     public GameEventProfilesResponseDTO updateGameEventProfile(Long id, GameEventProfilesMutationDTO gameEventProfilesMutationDTO) {
         GameEventProfiles gameEventProfiles = gameEventProfilesRepository.findById(id)

@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @Service
 public class GameEventService {
 
@@ -21,6 +23,7 @@ public class GameEventService {
     private final ProfileRepository profileRepository;
     private final EventStatusService eventStatusService;
     private final EventStatusRepository eventStatusRepository;
+    private final SecurityService securityService;
 
 
     public GameEventService(GameEventRepository gameEventRepository,
@@ -31,7 +34,7 @@ public class GameEventService {
                             ProfileService profileService,
                             ProfileRepository profileRepository,
                             EventStatusService eventStatusService,
-                            EventStatusRepository eventStatusRepository) {
+                            EventStatusRepository eventStatusRepository, SecurityService securityService) {
         this.gameEventRepository = gameEventRepository;
         this.gameRepository = gameRepository;
         this.gameService = gameService;
@@ -41,6 +44,7 @@ public class GameEventService {
         this.profileRepository = profileRepository;
         this.eventStatusService = eventStatusService;
         this.eventStatusRepository = eventStatusRepository;
+        this.securityService = securityService;
     }
 
 
@@ -59,7 +63,6 @@ public class GameEventService {
     }
 
 
-    //TODO admin method
     @Transactional
     public GameEventResponseDTO createGameEvent(GameEventMutationDTO gameEventMutationDTO) {
         GameEvent gameEvent = getGameEventFromDTO(gameEventMutationDTO);
@@ -69,7 +72,6 @@ public class GameEventService {
     }
 
 
-    //TODO admin method
     @Transactional
     public GameEventResponseDTO updateGameEvent(Long id, GameEventMutationDTO gameEventMutationDTO) {
         GameEvent gameEvent = gameEventRepository.findById(id)
@@ -78,20 +80,41 @@ public class GameEventService {
                                 + id
                                 + " не существует"
                 ));
-        GameEvent gameEventToUpdate = getGameEventFromDTO(gameEventMutationDTO);
-        gameEvent.setName(gameEventToUpdate.getName());
-        gameEvent.setDescription(gameEventToUpdate.getDescription());
-        gameEvent.setLocation(gameEventToUpdate.getLocation());
-        gameEvent.setDate(gameEventToUpdate.getDate());
-        gameEvent.setStatus(gameEventToUpdate.getStatus());
-        gameEvent.setOrganiser(gameEventToUpdate.getOrganiser());
-        gameEvent.setWinner(gameEventToUpdate.getWinner());
-        gameEvent.setGame(gameEventToUpdate.getGame());
-        gameEvent.setMinMembers(gameEventToUpdate.getMinMembers());
-        gameEvent.setMaxMembers(gameEventToUpdate.getMaxMembers());
 
-        GameEvent updatedGameEvent = gameEventRepository.save(gameEvent);
-        return getDTOFromGameEvent(updatedGameEvent);
+        GameEvent gameEventToUpdate = getGameEventFromDTO(gameEventMutationDTO);
+        if (gameEvent.getOrganiser() == gameEventToUpdate.getOrganiser()) {
+            gameEvent.setName(gameEventToUpdate.getName());
+            gameEvent.setDescription(gameEventToUpdate.getDescription());
+            gameEvent.setLocation(gameEventToUpdate.getLocation());
+            gameEvent.setDate(gameEventToUpdate.getDate());
+            gameEvent.setStatus(gameEventToUpdate.getStatus());
+            gameEvent.setOrganiser(gameEventToUpdate.getOrganiser());
+            gameEvent.setWinner(gameEventToUpdate.getWinner());
+            gameEvent.setGame(gameEventToUpdate.getGame());
+            gameEvent.setMinMembers(gameEventToUpdate.getMinMembers());
+            gameEvent.setMaxMembers(gameEventToUpdate.getMaxMembers());
+
+            GameEvent updatedGameEvent = gameEventRepository.save(gameEvent);
+            return getDTOFromGameEvent(updatedGameEvent);
+        }
+        throw new GameEventExistenceException(
+                "GameEvent с id="
+                        + id
+                        + "  принадлежащей вам не существует"
+        );
+    }
+
+    @Transactional
+    public void deleteGameEvent(Long id) {
+        GameEvent gameEvent = gameEventRepository.findById(id)
+                .orElseThrow(() -> new GameEventExistenceException(
+                        "GameEvent с id="
+                                + id
+                                + " не существует"
+                ));
+        if (Objects.equals(gameEvent.getOrganiser().getName(), securityService.findUserName())) {
+            gameEventRepository.deleteById(id);
+        }
     }
 
     protected GameEventResponseDTO getDTOFromGameEvent(GameEvent gameEvent) {

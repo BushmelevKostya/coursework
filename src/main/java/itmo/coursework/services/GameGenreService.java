@@ -15,6 +15,7 @@ import itmo.coursework.model.repository.GameRepository;
 import itmo.coursework.model.repository.GenreRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,8 +53,8 @@ public class GameGenreService {
     }
 
 
-    //TODO admin method
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public GameGenreResponseDTO createGameGenre(GameGenreMutationDTO gameGenreMutationDTO) {
         GameGenre gameGenre = getGameGenreFromDTO(gameGenreMutationDTO);
         gameGenre = gameGenreRepository.save(gameGenre);
@@ -62,8 +63,8 @@ public class GameGenreService {
     }
 
 
-    //TODO admin method
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public GameGenreResponseDTO updateGameGenre(Long id, GameGenreMutationDTO gameGenreMutationDTO) {
         GameGenre gameGenre = gameGenreRepository.findById(id)
                 .orElseThrow(() -> new GameGenreExistenceException("Game genre с id=" + id + " не существует"));
@@ -76,6 +77,12 @@ public class GameGenreService {
         gameGenre = gameGenreRepository.save(gameGenre);
 
         return getDTOFromGameGenre(gameGenre);
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteGameGenre(Long id) {
+        gameGenreRepository.deleteById(id);
     }
 
 

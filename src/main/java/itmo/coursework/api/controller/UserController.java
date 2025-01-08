@@ -6,6 +6,7 @@ import itmo.coursework.services.ProfileService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -41,5 +42,12 @@ public class UserController {
     @PutMapping("/{id}")
     public ProfileResponseDTO updateProfile(@PathVariable Long id, @RequestBody ProfileMutationDTO profileMutationDTO){
         return profileService.updateProfile(id, profileMutationDTO);
+    }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProfile(@PathVariable Long id) {
+        profileService.deleteProfile(id);
+        return ResponseEntity.ok().build();
     }
 }

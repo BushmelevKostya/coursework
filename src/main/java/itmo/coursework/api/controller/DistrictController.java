@@ -6,6 +6,7 @@ import itmo.coursework.services.DistrictService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -42,5 +43,12 @@ public class DistrictController {
     public DistrictResponseDTO updateDistrict(@PathVariable Long id,
                                               @RequestBody DistrictMutationDTO districtMutationDTO) {
         return districtService.updateDistrict(id, districtMutationDTO);
+    }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteDistrict(@PathVariable Long id) {
+        districtService.deleteDistrictById(id);
+        return ResponseEntity.ok().build();
     }
 }

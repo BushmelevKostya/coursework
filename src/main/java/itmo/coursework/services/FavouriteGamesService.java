@@ -15,6 +15,7 @@ import itmo.coursework.model.repository.GameRepository;
 import itmo.coursework.model.repository.ProfileRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,7 +52,6 @@ public class FavouriteGamesService {
     }
 
 
-    //TODO admin method
     @Transactional
     public FavouriteGamesResponseDTO createFavouriteGames(FavouriteGamesMutationDTO favouriteGamesMutationDTO) {
         FavouriteGames favouriteGames = getFavouriteGamesFromDTO(favouriteGamesMutationDTO);
@@ -61,7 +61,6 @@ public class FavouriteGamesService {
     }
 
 
-    //TODO admin method
     @Transactional
     public FavouriteGamesResponseDTO updateFavouriteGames(Long id, FavouriteGamesMutationDTO favouriteGamesMutationDTO) {
         FavouriteGames favouriteGames = favouriteGamesRepository.findById(id)
@@ -75,6 +74,11 @@ public class FavouriteGamesService {
         favouriteGames = favouriteGamesRepository.save(favouriteGames);
 
         return getDTOFromFavouriteGames(favouriteGames);
+    }
+
+    @Transactional
+    public void deleteFavouriteGames(Long id) {
+        deleteFavouriteGames(id);
     }
 
 

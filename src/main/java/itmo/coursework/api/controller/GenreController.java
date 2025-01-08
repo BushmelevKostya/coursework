@@ -7,6 +7,7 @@ import itmo.coursework.services.GenreService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -42,5 +43,12 @@ public class GenreController {
     @PutMapping("/{id}")
     public GenreResponseDTO updateGenre(@PathVariable Long id, @RequestBody GenreMutationDTO genreMutationDTO) {
         return genreService.updateGenre(id, genreMutationDTO);
+    }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteGenre(@PathVariable Long id) {
+        genreService.deleteGenre(id);
+        return ResponseEntity.ok().build();
     }
 }

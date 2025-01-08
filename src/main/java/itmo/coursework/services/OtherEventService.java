@@ -12,6 +12,7 @@ import itmo.coursework.model.repository.LocationRepository;
 import itmo.coursework.model.repository.OtherEventRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,8 +45,8 @@ public class OtherEventService {
     }
 
 
-    //TODO admin method
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public OtherEventResponseDTO createOtherEvent(OtherEventMutationDTO otherEventMutationDTO) {
         OtherEvent otherEvent = getOtherEventFromDTO(otherEventMutationDTO);
         otherEvent = otherEventRepository.save(otherEvent);
@@ -54,8 +55,8 @@ public class OtherEventService {
     }
 
 
-    //TODO admin method
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public OtherEventResponseDTO updateOtherEvent(Long id, OtherEventMutationDTO otherEventMutationDTO) {
         OtherEvent otherEvent = otherEventRepository.findById(id)
                 .orElseThrow(() -> new OtherEventExistenceException(
@@ -73,6 +74,11 @@ public class OtherEventService {
         return getDTOFromOtherEvent(updatedOtherEvent);
     }
 
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteOtherEvent(Long id) {
+        otherEventRepository.deleteById(id);
+    }
 
     protected OtherEventResponseDTO getDTOFromOtherEvent(OtherEvent otherEvent) {
         if (otherEvent.getLocation() == null) {

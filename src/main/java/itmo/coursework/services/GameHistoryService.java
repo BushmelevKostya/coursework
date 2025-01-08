@@ -11,6 +11,7 @@ import itmo.coursework.model.repository.GameHistoryRepository;
 import itmo.coursework.model.repository.ProfileRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,7 +44,6 @@ public class GameHistoryService {
     }
 
 
-    //TODO admin method
     @Transactional
     public GameHistoryResponseDTO createGameHistory(GameHistoryMutationDTO gameHistoryMutationDTO) {
         GameHistory gameHistory = getGameHistoryFromDTO(gameHistoryMutationDTO);
@@ -53,8 +53,8 @@ public class GameHistoryService {
     }
 
 
-    //TODO admin method
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public GameHistoryResponseDTO updateGameHistory(Long id, GameHistoryMutationDTO gameHistoryMutationDTO) {
         GameHistory gameHistory = gameHistoryRepository.findById(id)
                 .orElseThrow(() -> new GameHistoryExistenceException(
@@ -75,6 +75,12 @@ public class GameHistoryService {
 
         GameHistory updatedGameHistory = gameHistoryRepository.save(gameHistory);
         return getDTOFromGameHistory(updatedGameHistory);
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteGameHistory(Long id) {
+        gameHistoryRepository.deleteById(id);
     }
 
 

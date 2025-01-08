@@ -6,6 +6,7 @@ import itmo.coursework.services.CityService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -41,5 +42,12 @@ public class CityController {
     @PutMapping("/{id}")
     public CityResponseDTO updateCity(@PathVariable Long id, @RequestBody CityMutationDTO cityMutationDTO) {
         return cityService.updateCity(id, cityMutationDTO);
+    }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCity(@PathVariable Long id) {
+        cityService.deleteCity(id);
+        return ResponseEntity.ok().build();
     }
 }
