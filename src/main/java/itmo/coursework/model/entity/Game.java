@@ -24,12 +24,12 @@ public class Game {
 	private int minPlayers;
 	private int maxPlayers;
 	
-	@OneToMany(mappedBy = "game")
+	@OneToMany(mappedBy = "game",cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<FavouriteGames> favouriteGames;
 	
-	@OneToMany(mappedBy = "game")
+	@OneToMany(mappedBy = "game",cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<GameEvent> gameEvents;
 	
-	@OneToMany(mappedBy = "game")
+	@OneToMany(mappedBy = "game",cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<GameGenre> gameGenres;
 }

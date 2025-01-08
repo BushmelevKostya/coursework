@@ -18,10 +18,10 @@ public class GameGenre {
 	private Long id;
 	
 	@ManyToOne
-	@JoinColumn(name = "gameId")
+	@JoinColumn(name = "gameId", nullable = false)
 	private Game game;
 	
 	@ManyToOne
-	@JoinColumn(name = "genreId")
+	@JoinColumn(name = "genreId", nullable = false)
 	private Genre genre;
 }

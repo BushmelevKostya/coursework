@@ -22,9 +22,9 @@ public class Location {
 	private String address;
 	
 	@ManyToOne
-	@JoinColumn(name = "districtId")
+	@JoinColumn(name = "districtId", nullable = false)
 	private District district;
 	
-	@OneToMany(mappedBy = "location")
+	@OneToMany(mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<OtherEvent> otherEvents;
 }

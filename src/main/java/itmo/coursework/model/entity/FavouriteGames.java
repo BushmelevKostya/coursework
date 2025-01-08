@@ -17,12 +17,12 @@ public class FavouriteGames {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@ManyToOne
-	@JoinColumn(name = "profileId")
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "profileId", nullable = false)
 	private Profile profile;
 	
-	@ManyToOne
-	@JoinColumn(name = "gameId")
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "gameId", nullable = false)
 	private Game game;
 	
 }

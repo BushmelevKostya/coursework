@@ -24,7 +24,7 @@ public class GameHistory {
 	private String gameResult;
 	
 	@ManyToOne
-	@JoinColumn(name = "profileId")
+	@JoinColumn(name = "profileId", nullable = false)
 	private Profile profile;
 	
 }

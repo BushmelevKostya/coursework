@@ -18,11 +18,11 @@ public class OtherEventProfiles {
 	private Long id;
 	
 	@ManyToOne
-	@JoinColumn(name = "profileId")
+	@JoinColumn(name = "profileId", nullable = false)
 	private Profile profile;
 	
 	@ManyToOne
-	@JoinColumn(name = "otherEventId")
+	@JoinColumn(name = "otherEventId", nullable = false)
 	private OtherEvent otherEvent;
 	
 }

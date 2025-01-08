@@ -21,10 +21,10 @@ public class District {
 	
 	private String name;
 	
-	@ManyToOne
-	@JoinColumn(name = "cityId")
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "cityId", nullable = false)
 	private City city;
 	
-	@OneToMany(mappedBy = "district")
+	@OneToMany(mappedBy = "district",cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<Location> locations;
 }

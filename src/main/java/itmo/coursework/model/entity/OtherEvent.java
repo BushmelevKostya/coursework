@@ -27,7 +27,7 @@ public class OtherEvent {
 	@ManyToOne
 	private Location location;
 	
-	@OneToMany(mappedBy = "otherEvent")
+	@OneToMany(mappedBy = "otherEvent", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<OtherEventProfiles> otherEventProfiles;
 	
 }

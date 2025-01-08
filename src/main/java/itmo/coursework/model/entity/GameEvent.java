@@ -25,21 +25,21 @@ public class GameEvent {
 	private LocalDateTime date;
 	private int minMembers;
 	private int maxMembers;
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	private Profile winner;
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	private Profile organiser;
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	private Location location;
 
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	private EventStatus status;
 	
 	@ManyToOne
-	@JoinColumn(name = "gameId")
+	@JoinColumn(name = "gameId", nullable = false)
 	private Game game;
 	
-	@OneToMany(mappedBy = "gameEvent")
+	@OneToMany(mappedBy = "gameEvent", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<GameEventProfiles> gameEventProfiles;
 	
 }

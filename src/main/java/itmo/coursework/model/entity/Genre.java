@@ -21,6 +21,6 @@ public class Genre {
 	
 	private String name;
 	
-	@OneToMany(mappedBy = "genre")
+	@OneToMany(mappedBy = "genre", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<GameGenre> gameGenres;
 }

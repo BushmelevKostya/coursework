@@ -24,16 +24,16 @@ public class Profile {
 	private String icon;
 	private String password;
 	
-	@OneToMany(mappedBy = "profile")
+	@OneToMany(mappedBy = "profile",cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<FavouriteGames> favouriteGames;
 	
-	@OneToMany(mappedBy = "profile")
+	@OneToMany(mappedBy = "profile",cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<GameHistory> gameHistories;
 	
-	@OneToMany(mappedBy = "profile")
+	@OneToMany(mappedBy = "profile",cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<GameEventProfiles> gameEventProfiles;
 	
-	@OneToMany(mappedBy = "profile")
+	@OneToMany(mappedBy = "profile",cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<OtherEventProfiles> otherEventProfiles;
 	
 	
