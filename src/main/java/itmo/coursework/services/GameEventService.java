@@ -24,6 +24,7 @@ public class GameEventService {
     private final EventStatusService eventStatusService;
     private final EventStatusRepository eventStatusRepository;
     private final SecurityService securityService;
+    private final GameEventProfilesRepository gameEventProfilesRepository;
 
 
     public GameEventService(GameEventRepository gameEventRepository,
@@ -34,7 +35,9 @@ public class GameEventService {
                             ProfileService profileService,
                             ProfileRepository profileRepository,
                             EventStatusService eventStatusService,
-                            EventStatusRepository eventStatusRepository, SecurityService securityService) {
+                            EventStatusRepository eventStatusRepository,
+                            SecurityService securityService,
+                            GameEventProfilesRepository gameEventProfilesRepository) {
         this.gameEventRepository = gameEventRepository;
         this.gameRepository = gameRepository;
         this.gameService = gameService;
@@ -45,6 +48,7 @@ public class GameEventService {
         this.eventStatusService = eventStatusService;
         this.eventStatusRepository = eventStatusRepository;
         this.securityService = securityService;
+        this.gameEventProfilesRepository = gameEventProfilesRepository;
     }
 
 
@@ -66,6 +70,7 @@ public class GameEventService {
     @Transactional
     public GameEventResponseDTO createGameEvent(GameEventMutationDTO gameEventMutationDTO) {
         GameEvent gameEvent = getGameEventFromDTO(gameEventMutationDTO);
+        gameEvent.setCurrentMembers(1);
         gameEvent = gameEventRepository.save(gameEvent);
 
         return getDTOFromGameEvent(gameEvent);
@@ -143,6 +148,7 @@ public class GameEventService {
                 gameEvent.getName(),
                 gameEvent.getDescription(),
                 gameEvent.getDate(),
+                gameEvent.getCurrentMembers(),
                 gameEvent.getMinMembers(),
                 gameEvent.getMaxMembers(),
                 winnerResponseDTO,
