@@ -4,7 +4,6 @@ import itmo.coursework.dto.OtherEventProfilesMutationDTO;
 import itmo.coursework.dto.OtherEventProfilesResponseDTO;
 import itmo.coursework.dto.OtherEventResponseDTO;
 import itmo.coursework.dto.ProfileResponseDTO;
-import itmo.coursework.exceptions.entity.impl.GameEventProfilesException;
 import itmo.coursework.exceptions.entity.impl.OtherEventExistenceException;
 import itmo.coursework.exceptions.entity.impl.OtherEventProfilesExistenceException;
 import itmo.coursework.exceptions.entity.impl.ProfileExistenceException;

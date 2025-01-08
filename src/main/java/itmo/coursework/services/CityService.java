@@ -3,7 +3,6 @@ package itmo.coursework.services;
 import itmo.coursework.dto.CityMutationDTO;
 import itmo.coursework.dto.CityResponseDTO;
 import itmo.coursework.exceptions.entity.impl.CityExistenceException;
-import itmo.coursework.exceptions.entity.impl.GenreExistenceException;
 import itmo.coursework.model.entity.City;
 import itmo.coursework.model.repository.CityRepository;
 import org.springframework.data.domain.Page;

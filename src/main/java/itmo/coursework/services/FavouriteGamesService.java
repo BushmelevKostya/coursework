@@ -6,7 +6,6 @@ import itmo.coursework.dto.GameResponseDTO;
 import itmo.coursework.dto.ProfileResponseDTO;
 import itmo.coursework.exceptions.entity.impl.FavouriteGamesException;
 import itmo.coursework.exceptions.entity.impl.GameExistenceException;
-import itmo.coursework.exceptions.entity.impl.GameGenreExistenceException;
 import itmo.coursework.exceptions.entity.impl.ProfileExistenceException;
 import itmo.coursework.model.entity.FavouriteGames;
 import itmo.coursework.model.entity.Game;
