@@ -70,7 +70,7 @@ public class GameEventService {
     public GameEventResponseDTO createGameEvent(GameEventMutationDTO gameEventMutationDTO) {
         GameEvent gameEvent = getGameEventFromDTO(gameEventMutationDTO);
         gameEvent = gameEventRepository.save(gameEvent);
-        this.schedulerService.scheduleDeletion(gameEvent, Duration.between(LocalDateTime.now(), gameEvent.getDate()));
+//        this.schedulerService.scheduleDeletion(gameEvent, Duration.between(LocalDateTime.now(), gameEvent.getDate()));
         return getDTOFromGameEvent(gameEvent);
     }
 
@@ -181,5 +181,16 @@ public class GameEventService {
         gameEvent.setGame(game);
 
         return gameEvent;
+    }
+    
+    public String deleteGameEvent(Long id, GameEventMutationDTO gameEventMutationDTO) {
+        GameEvent gameEvent = gameEventRepository.findById(id)
+                .orElseThrow(() -> new GameEventExistenceException(
+                        "GameEvent с id="
+                                + id
+                                + " не существует"
+                ));
+        schedulerService.deleteGameEvent(gameEvent);
+        return "успешно удалено";
     }
 }

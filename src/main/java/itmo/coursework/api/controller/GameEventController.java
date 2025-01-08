@@ -3,6 +3,7 @@ package itmo.coursework.api.controller;
 import itmo.coursework.dto.GameEventMutationDTO;
 import itmo.coursework.dto.GameEventResponseDTO;
 import itmo.coursework.services.GameEventService;
+import itmo.coursework.services.ShedulerService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -13,9 +14,11 @@ import org.springframework.web.bind.annotation.*;
 public class GameEventController {
 
     private final GameEventService gameEventService;
-
-    public GameEventController(GameEventService gameEventService) {
+    private final ShedulerService shedulerService;
+    
+    public GameEventController(GameEventService gameEventService, ShedulerService shedulerService) {
         this.gameEventService = gameEventService;
+        this.shedulerService = shedulerService;
     }
 
 
@@ -42,5 +45,11 @@ public class GameEventController {
     public GameEventResponseDTO updateGameEvent(@PathVariable Long id,
                                                 @RequestBody GameEventMutationDTO gameEventMutationDTO) {
         return gameEventService.updateGameEvent(id, gameEventMutationDTO);
+    }
+    
+    @DeleteMapping("/{id}")
+    public String deleteGameEvent(@PathVariable Long id,
+                                                @RequestBody GameEventMutationDTO gameEventMutationDTO) {
+        return gameEventService.deleteGameEvent(id, gameEventMutationDTO);
     }
 }

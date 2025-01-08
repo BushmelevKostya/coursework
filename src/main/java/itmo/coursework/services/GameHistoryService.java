@@ -71,7 +71,7 @@ public class GameHistoryService {
                 ));
         gameHistory.setProfile(profile);
         gameHistory.setEventName(gameHistoryMutationDTO.eventName());
-        gameHistory.setGameResult(GameResult.valueOf(gameHistoryMutationDTO.gameResult()));
+        gameHistory.setGameResult(gameHistoryMutationDTO.gameResult());
         gameHistory.setDateEvent(gameHistoryMutationDTO.dateEvent());
 
         GameHistory updatedGameHistory = gameHistoryRepository.save(gameHistory);
@@ -104,7 +104,7 @@ public class GameHistoryService {
         gameHistory.setProfile(profile);
         gameHistory.setEventName(gameHistoryMutationDTO.eventName());
         gameHistory.setDateEvent(gameHistoryMutationDTO.dateEvent());
-        gameHistory.setGameResult(GameResult.valueOf(gameHistoryMutationDTO.gameResult()));
+        gameHistory.setGameResult(gameHistoryMutationDTO.gameResult());
 
         return gameHistory;
     }

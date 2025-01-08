@@ -28,5 +28,4 @@ public class GameHistory {
 	@ManyToOne
 	@JoinColumn(name = "profileId")
 	private Profile profile;
-	
 }
