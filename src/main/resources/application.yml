@@ -8,9 +8,9 @@ spring:
           jwk-set-uri: http://localhost:9000/realms/devrealm/protocol/openid-connect/certs
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/lab1
-    username: mitrian
-    password: mitrian
+    url: jdbc:postgresql://localhost:5435/cw
+    username: cw
+    password: cw
   jpa:
     hibernate:
       ddl-auto: update

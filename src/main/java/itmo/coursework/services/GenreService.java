@@ -14,11 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class GenreService {
 
     private final GenreRepository genreRepository;
-    private final SecurityService securityService;
+//    private final SecurityService securityService;
 
-    public GenreService(GenreRepository genreRepository, SecurityService securityService) {
+    public GenreService(GenreRepository genreRepository) {
+//    public GenreService(GenreRepository genreRepository, SecurityService securityService) {
         this.genreRepository = genreRepository;
-        this.securityService = securityService;
+//        this.securityService = securityService;
     }
 
 

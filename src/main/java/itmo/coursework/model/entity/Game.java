@@ -14,7 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Game {
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -24,8 +24,8 @@ public class Game {
 	private int minPlayers;
 	private int maxPlayers;
 	
-	@ManyToMany(mappedBy = "favouriteGames")
-	private Set<Profile> profiles;
+	@OneToMany(mappedBy = "game")
+	private Set<FavouriteGames> favouriteGames;
 	
 	@OneToMany(mappedBy = "game")
 	private Set<GameEvent> gameEvents;
