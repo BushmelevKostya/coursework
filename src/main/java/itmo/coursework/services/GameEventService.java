@@ -4,10 +4,14 @@ import itmo.coursework.dto.*;
 import itmo.coursework.exceptions.entity.impl.*;
 import itmo.coursework.model.entity.*;
 import itmo.coursework.model.repository.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 @Service
 public class GameEventService {
@@ -21,6 +25,7 @@ public class GameEventService {
     private final ProfileRepository profileRepository;
     private final EventStatusService eventStatusService;
     private final EventStatusRepository eventStatusRepository;
+    private final ShedulerService schedulerService;
 
 
     public GameEventService(GameEventRepository gameEventRepository,
@@ -31,7 +36,7 @@ public class GameEventService {
                             ProfileService profileService,
                             ProfileRepository profileRepository,
                             EventStatusService eventStatusService,
-                            EventStatusRepository eventStatusRepository) {
+                            EventStatusRepository eventStatusRepository, ShedulerService schedulerService) {
         this.gameEventRepository = gameEventRepository;
         this.gameRepository = gameRepository;
         this.gameService = gameService;
@@ -41,6 +46,7 @@ public class GameEventService {
         this.profileRepository = profileRepository;
         this.eventStatusService = eventStatusService;
         this.eventStatusRepository = eventStatusRepository;
+	    this.schedulerService = schedulerService;
     }
 
 
@@ -58,13 +64,13 @@ public class GameEventService {
                 ));
     }
 
-
+    //Событие удалится, когда истечет срок записи (gameevent.date)
     //TODO admin method
     @Transactional
     public GameEventResponseDTO createGameEvent(GameEventMutationDTO gameEventMutationDTO) {
         GameEvent gameEvent = getGameEventFromDTO(gameEventMutationDTO);
         gameEvent = gameEventRepository.save(gameEvent);
-
+        this.schedulerService.scheduleDeletion(gameEvent, Duration.between(LocalDateTime.now(), gameEvent.getDate()));
         return getDTOFromGameEvent(gameEvent);
     }
 
@@ -132,6 +138,7 @@ public class GameEventService {
 
     protected GameEvent getGameEventFromDTO(GameEventMutationDTO gameEventMutationDTO) {
         GameEvent gameEvent = new GameEvent();
+        System.out.println(gameEventMutationDTO.organizerId());
         Profile organiser = profileRepository.findById(gameEventMutationDTO.organizerId())
                 .orElseThrow(() -> new ProfileExistenceException(
                         "Profile огранизатора с id="

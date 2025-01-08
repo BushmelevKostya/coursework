@@ -8,6 +8,6 @@ public record GameHistoryResponseDTO(Long id,
                                      String eventName,
                                      @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
                                      LocalDateTime dateEvent,
-                                     String gameResult,
+                                     itmo.coursework.model.entity.GameResult gameResult,
                                      ProfileResponseDTO profileResponseDTO) {
 }

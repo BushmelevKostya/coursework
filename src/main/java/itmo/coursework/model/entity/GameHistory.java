@@ -21,7 +21,9 @@ public class GameHistory {
 	
 	private String eventName;
 	private LocalDateTime dateEvent;
-	private String gameResult;
+	
+	@Enumerated(EnumType.STRING)
+	private GameResult gameResult;
 	
 	@ManyToOne
 	@JoinColumn(name = "profileId")
