@@ -6,12 +6,17 @@ import itmo.coursework.model.entity.*;
 import itmo.coursework.model.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class GameEventService {
@@ -192,5 +197,23 @@ public class GameEventService {
                 ));
         schedulerService.deleteGameEvent(gameEvent);
         return "успешно удалено";
+    }
+
+    public List<GameEventResponseDTO> findRecommendedEvents(Long profileId) {
+        Optional<Long> mostFrequentGameId = gameEventRepository.findMostFrequentGameId();
+        List<Long> favouriteGamesIds = gameEventRepository.findFavouriteGameIdsByProfile(profileId);
+        List<Long> otherProfilesWithSimilarGames = gameEventRepository.findProfilesWithSimilarFavouriteGames(favouriteGamesIds, profileId);
+        
+        
+        List<Long> recommendedGameIds = gameEventRepository.findRecommendedGameIds(otherProfilesWithSimilarGames, favouriteGamesIds);
+        
+        Set<Long> allRecommendedGameIds = new HashSet<>(recommendedGameIds);
+        mostFrequentGameId.ifPresent(allRecommendedGameIds::add);
+        
+        List<GameEvent> recommendedEvents = gameEventRepository.findEventsByGameIds(new ArrayList<>(allRecommendedGameIds));
+
+        return recommendedEvents.stream()
+                .map(this::getDTOFromGameEvent)
+                .collect(Collectors.toList());
     }
 }

@@ -2,6 +2,7 @@ package itmo.coursework.api.controller;
 
 import itmo.coursework.dto.GameEventMutationDTO;
 import itmo.coursework.dto.GameEventResponseDTO;
+import itmo.coursework.model.entity.Game;
 import itmo.coursework.model.repository.GameEventRepository;
 import itmo.coursework.services.GameEventService;
 import itmo.coursework.services.ShedulerService;
@@ -99,5 +100,10 @@ public class GameEventController {
         return gameEventRepository.findScheduledEvents().stream()
                 .map(gameEventService::getDTOFromGameEvent)
                 .toList();
+    }
+    
+    @GetMapping("/recommended/{id}")
+    public List<GameEventResponseDTO> findRecommendedEvents(@PathVariable Long id) {
+        return gameEventService.findRecommendedEvents(id);
     }
 }
