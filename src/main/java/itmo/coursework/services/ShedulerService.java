@@ -5,6 +5,7 @@ import itmo.coursework.model.repository.EventStatusRepository;
 import itmo.coursework.model.repository.GameEventRepository;
 import itmo.coursework.model.repository.GameHistoryRepository;
 import itmo.coursework.model.repository.ProfileRepository;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 
@@ -23,8 +24,9 @@ public class ShedulerService {
 	private final GameHistoryRepository gameHistoryRepository;
 	private final ProfileRepository profileRepository;
 	private final EventStatusRepository eventStatusRepository;
+	private final EventService eventService;
 	
-	public ShedulerService(GameEventRepository gameEventRepository, GameHistoryRepository gameHistoryRepository, ProfileRepository profileRepository, EventStatusRepository eventStatusRepository) {
+	public ShedulerService(GameEventRepository gameEventRepository, GameHistoryRepository gameHistoryRepository, ProfileRepository profileRepository, EventStatusRepository eventStatusRepository, EventService eventService) {
 		this.scheduler = new ThreadPoolTaskScheduler();
 		this.scheduler.setPoolSize(10);
 		this.scheduler.initialize();
@@ -32,6 +34,7 @@ public class ShedulerService {
 		this.gameHistoryRepository = gameHistoryRepository;
 		this.profileRepository = profileRepository;
 		this.eventStatusRepository = eventStatusRepository;
+		this.eventService = eventService;
 	}
 	
 	public ScheduledFuture<?> scheduleDeletion(GameEvent event, Duration delay) {
@@ -62,5 +65,10 @@ public class ShedulerService {
 		event.setStatus(eventStatus);
 		gameEventRepository.flush();
 		gameEventRepository.save(event);
+	}
+	
+	@Scheduled(fixedRate = 3600000)
+	public void updateOtherEvents() {
+		eventService.fetchAndSaveCurrentEvents();
 	}
 }
