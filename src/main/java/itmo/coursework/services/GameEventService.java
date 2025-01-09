@@ -9,13 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration;
-import java.time.format.DateTimeFormatter;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZonedDateTime;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class GameEventService {
@@ -123,20 +118,30 @@ public class GameEventService {
         );
     }
 
-    @Transactional
-    public void deleteGameEvent(Long id) {
+//    @Transactional
+//    public void deleteGameEvent(Long id) {
+//        GameEvent gameEvent = gameEventRepository.findById(id)
+//                .orElseThrow(() -> new GameEventExistenceException(
+//                        "GameEvent с id="
+//                                + id
+//                                + " не существует"
+//                ));
+//        if (Objects.equals(gameEvent.getOrganiser().getName(), securityService.findUserName())) {
+//            gameEventRepository.deleteById(id);
+//        }
+//    }
+
+
+    public String deleteGameEvent(Long id, GameEventMutationDTO gameEventMutationDTO) {
         GameEvent gameEvent = gameEventRepository.findById(id)
                 .orElseThrow(() -> new GameEventExistenceException(
                         "GameEvent с id="
                                 + id
                                 + " не существует"
                 ));
-        if (Objects.equals(gameEvent.getOrganiser().getName(), securityService.findUserName())) {
-            gameEventRepository.deleteById(id);
-        }
+        schedulerService.deleteGameEvent(gameEvent);
+        return "успешно удалено";
     }
-
-
 
 
 
@@ -148,8 +153,6 @@ public class GameEventService {
             String statusName,
             Integer minMembers,
             Integer maxMembers,
-            //ZonedDateTime startDate,
-            //ZonedDateTime endDate,
             Pageable pageable) {
 
         Page<GameEvent> gameEventsPage = gameEventRepository.findByFilters(
@@ -165,6 +168,22 @@ public class GameEventService {
 
         return gameEventsPage.map(this::getDTOFromGameEvent);
     }
+
+    public List<GameEventResponseDTO> findRecommendedEvents(Long profileId) {
+        Optional<Long> mostFrequentGameId = gameEventRepository.findMostFrequentGameId();
+        List<Long> favouriteGamesIds = gameEventRepository.findFavouriteGameIdsByProfile(profileId);
+        List<Long> otherProfilesWithSimilarGames = gameEventRepository.findProfilesWithSimilarFavouriteGames(favouriteGamesIds, profileId);
+
+        List<Long> recommendedGameIds = gameEventRepository.findRecommendedGameIds(otherProfilesWithSimilarGames, favouriteGamesIds);
+
+        Set<Long> allRecommendedGameIds = new HashSet<>(recommendedGameIds);
+        mostFrequentGameId.ifPresent(allRecommendedGameIds::add);
+
+        List<GameEvent> recommendedEvents = gameEventRepository.findEventsByGameIds(new ArrayList<>(allRecommendedGameIds));
+        return recommendedEvents.stream()
+                .map(this::getDTOFromGameEvent)
+                .collect(Collectors.toList());
+}
 
     public GameEventResponseDTO getDTOFromGameEvent(GameEvent gameEvent) {
         if (gameEvent.getGame() == null) {

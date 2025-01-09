@@ -55,11 +55,10 @@ public class GameEventController {
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteGameEvent(@PathVariable Long id) {
-        gameEventService.deleteGameEvent(id);
-        return ResponseEntity.ok().build();
+    public String deleteGameEvent(@PathVariable Long id,
+                                  @RequestBody GameEventMutationDTO gameEventMutationDTO) {
+        return gameEventService.deleteGameEvent(id, gameEventMutationDTO);
     }
-
 
     @GetMapping("/available")
     public Page<GameEventResponseDTO> getAvailableGameEvents(Pageable pageable) {
@@ -128,5 +127,10 @@ public class GameEventController {
         return gameEventRepository.findScheduledEvents().stream()
                 .map(gameEventService::getDTOFromGameEvent)
                 .toList();
+    }
+
+    @GetMapping("/recommended/{id}")
+    public List<GameEventResponseDTO> findRecommendedEvents(@PathVariable Long id) {
+        return gameEventService.findRecommendedEvents(id);
     }
 }

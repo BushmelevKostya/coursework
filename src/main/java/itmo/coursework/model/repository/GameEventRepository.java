@@ -77,6 +77,55 @@ public interface GameEventRepository extends JpaRepository<GameEvent, Long> {
 
     @Query(value = "SELECT ge.* FROM game_events ge " +
             "JOIN event_status es ON ge.status_id = es.id " +
-            "WHERE es.status = 'Проведено'", nativeQuery = true)
+            "WHERE es.status = 'finished'", nativeQuery = true)
     List<GameEvent> findScheduledEvents();
+
+
+    // самая популярная игра из истории игр
+    @Query("""
+       SELECT g.id
+       FROM GameHistory gh
+       JOIN Profile p ON p.id = gh.profile.id
+       JOIN GameEventProfiles gep ON gep.profile.id = p.id
+       JOIN GameEvent ge ON ge.id = gep.gameEvent.id
+       JOIN Game g ON g.id = ge.game.id
+       GROUP BY g.id
+       ORDER BY COUNT(gh.id) DESC
+       LIMIT 1
+       """)
+    Optional<Long> findMostFrequentGameId();
+
+    // FavouriteGames
+    @Query("""
+       SELECT fg.game.id
+       FROM FavouriteGames fg
+       WHERE fg.profile.id = :profileId
+       """)
+    List<Long> findFavouriteGameIdsByProfile(@Param("profileId") Long profileId);
+
+    // Profiles других пользователей с похожими FavouriteGames
+    @Query("""
+       SELECT DISTINCT fg.profile.id
+       FROM FavouriteGames fg
+       WHERE fg.game.id IN :gameIds AND fg.profile.id != :profileId
+       """)
+    List<Long> findProfilesWithSimilarFavouriteGames(@Param("gameIds") List<Long> gameIds,
+                                                     @Param("profileId") Long profileId);
+
+    // игры, которые есть у других пользователей, но отсутствуют у текущего
+    @Query("""
+       SELECT DISTINCT fg.game.id
+       FROM FavouriteGames fg
+       WHERE fg.profile.id IN :profileIds AND fg.game.id NOT IN :excludedGameIds
+       """)
+    List<Long> findRecommendedGameIds(@Param("profileIds") List<Long> profileIds,
+                                      @Param("excludedGameIds") List<Long> excludedGameIds);
+
+    // события по играм
+    @Query("""
+       SELECT ge
+       FROM GameEvent ge
+       WHERE ge.game.id IN :gameIds
+       """)
+    List<GameEvent> findEventsByGameIds(@Param("gameIds") List<Long> gameIds);
 }

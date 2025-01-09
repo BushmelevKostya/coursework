@@ -91,7 +91,8 @@ public class LocationService {
                     districtResponseDTO
             );
         }
-        throw new DistrictExistenceException("District не существует");
+        return new LocationResponseDTO(location.getId(), location.getAddress(), null);
+//        throw new DistrictExistenceException("District не существует");
     }
 
     protected Location getLocationFromDTO(LocationMutationDTO locationMutationDTO) {

@@ -21,6 +21,7 @@ public class OtherEvent {
 	private Long id;
 	
 	private String name;
+	@Column(columnDefinition = "TEXT")
 	private String description;
 	private LocalDateTime date;
 	

@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Set;
 
@@ -29,23 +28,23 @@ public class GameEvent {
 	@Positive
 	private long currentMembers;
 	private int maxMembers;
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne//(cascade = CascadeType.ALL)
 	@JoinColumn(name = "winnerId")
 	private Profile winner;
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne//(cascade = CascadeType.ALL)
 	@JoinColumn(name = "organiserId")
 	private Profile organiser;
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne//(cascade = CascadeType.ALL)
 	private Location location;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne//(cascade = CascadeType.ALL)
 	private EventStatus status;
 	
 	@ManyToOne
 	@JoinColumn(name = "gameId", nullable = false)
 	private Game game;
 	
-	@OneToMany(mappedBy = "gameEvent", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "gameEvent")//, cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<GameEventProfiles> gameEventProfiles;
 	
 }
