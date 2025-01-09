@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Duration;
 import java.time.format.DateTimeFormatter;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -29,6 +31,7 @@ public class GameEventService {
     private final EventStatusRepository eventStatusRepository;
     private final SecurityService securityService;
     private final GameEventProfilesRepository gameEventProfilesRepository;
+    private final ShedulerService schedulerService;
 
 
     public GameEventService(GameEventRepository gameEventRepository,
@@ -41,7 +44,7 @@ public class GameEventService {
                             EventStatusService eventStatusService,
                             EventStatusRepository eventStatusRepository,
                             SecurityService securityService,
-                            GameEventProfilesRepository gameEventProfilesRepository) {
+                            GameEventProfilesRepository gameEventProfilesRepository, ShedulerService schedulerService) {
         this.gameEventRepository = gameEventRepository;
         this.gameRepository = gameRepository;
         this.gameService = gameService;
@@ -53,6 +56,7 @@ public class GameEventService {
         this.eventStatusRepository = eventStatusRepository;
         this.securityService = securityService;
         this.gameEventProfilesRepository = gameEventProfilesRepository;
+        this.schedulerService = schedulerService;
     }
 
 
@@ -80,6 +84,7 @@ public class GameEventService {
     public GameEventResponseDTO createGameEvent(GameEventMutationDTO gameEventMutationDTO) {
         GameEvent gameEvent = getGameEventFromDTO(gameEventMutationDTO);
         gameEvent.setCurrentMembers(1);
+        // this.schedulerService.scheduleDeletion(gameEvent, Duration.between(LocalDateTime.now(), gameEvent.getDate()));
         gameEvent = gameEventRepository.save(gameEvent);
 
         return getDTOFromGameEvent(gameEvent);
@@ -161,7 +166,7 @@ public class GameEventService {
         return gameEventsPage.map(this::getDTOFromGameEvent);
     }
 
-    protected GameEventResponseDTO getDTOFromGameEvent(GameEvent gameEvent) {
+    public GameEventResponseDTO getDTOFromGameEvent(GameEvent gameEvent) {
         if (gameEvent.getGame() == null) {
             throw new GameExistenceException("Game не существует");
         }

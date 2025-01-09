@@ -2,6 +2,7 @@ package itmo.coursework.api.controller;
 
 import itmo.coursework.dto.GameEventMutationDTO;
 import itmo.coursework.dto.GameEventResponseDTO;
+import itmo.coursework.model.repository.GameEventRepository;
 import itmo.coursework.services.GameEventService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,15 +13,18 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/gameevent")
 public class GameEventController {
 
     private final GameEventService gameEventService;
+    private final GameEventRepository gameEventRepository;
 
-    public GameEventController(GameEventService gameEventService) {
+    public GameEventController(GameEventService gameEventService, GameEventRepository gameEventRepository) {
         this.gameEventService = gameEventService;
+        this.gameEventRepository = gameEventRepository;
     }
 
 
@@ -82,5 +86,47 @@ public class GameEventController {
                 minMembers,
                 maxMembers,
                 pageable);
+    }
+
+    @GetMapping("/by-district")
+    public List<GameEventResponseDTO> findByDistrict(@RequestParam String districtName) {
+        return gameEventRepository.findByDistrict(districtName).stream()
+                .map(gameEventService::getDTOFromGameEvent)
+                .toList();
+    }
+
+    @GetMapping("/by-city")
+    public List<GameEventResponseDTO> findByCity(@RequestParam String cityName) {
+        return gameEventRepository.findByCity(cityName).stream()
+                .map(gameEventService::getDTOFromGameEvent)
+                .toList();
+    }
+
+    @GetMapping("/by-game")
+    public List<GameEventResponseDTO> findByGame(@RequestParam String gameName) {
+        return gameEventRepository.findByGame(gameName).stream()
+                .map(gameEventService::getDTOFromGameEvent)
+                .toList();
+    }
+
+    @GetMapping("/with-min-members")
+    public List<GameEventResponseDTO> findByMinimumMembers(@RequestParam int minMembers) {
+        return gameEventRepository.findByMinimumMembers(minMembers).stream()
+                .map(gameEventService::getDTOFromGameEvent)
+                .toList();
+    }
+
+    @GetMapping("/by-genre")
+    public List<GameEventResponseDTO> findByGameGenre(@RequestParam String genre) {
+        return gameEventRepository.findByGameGenre(genre).stream()
+                .map(gameEventService::getDTOFromGameEvent)
+                .toList();
+    }
+
+    @GetMapping("/scheduled")
+    public List<GameEventResponseDTO> findScheduledEvents() {
+        return gameEventRepository.findScheduledEvents().stream()
+                .map(gameEventService::getDTOFromGameEvent)
+                .toList();
     }
 }

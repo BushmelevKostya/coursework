@@ -11,7 +11,9 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "district")
+@Table(name = "district", indexes = {
+		@Index(name = "idx_district_name", columnList = "name")
+})
 @NoArgsConstructor
 @AllArgsConstructor
 public class District {
