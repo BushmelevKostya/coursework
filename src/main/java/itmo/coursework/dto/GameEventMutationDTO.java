@@ -11,8 +11,6 @@ public record GameEventMutationDTO(String name,
                                    ZonedDateTime date,
                                    int minMembers,
                                    int maxMembers,
-                                   Long winnerId,
-                                   Long organizerId,
                                    Long locationId,
                                    Long statusId,
                                    Long gameId) {

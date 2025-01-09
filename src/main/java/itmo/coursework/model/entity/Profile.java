@@ -20,9 +20,7 @@ public class Profile {
 	private Long id;
 	
 	private String name;
-	private String email;
 	private String icon;
-	private String password;
 	
 	@OneToMany(mappedBy = "profile",cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<FavouriteGames> favouriteGames;

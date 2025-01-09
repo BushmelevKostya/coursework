@@ -9,13 +9,17 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface GameEventRepository extends JpaRepository<GameEvent, Long> {
     Optional<GameEvent> findByIdAndOrganiser(Long id, Profile organiser);
+
     @Query("SELECT ge FROM GameEvent ge " +
             "LEFT JOIN ge.location location " +
             "LEFT JOIN ge.status status " +
@@ -26,9 +30,9 @@ public interface GameEventRepository extends JpaRepository<GameEvent, Long> {
             "AND (:locationName IS NULL OR location.address LIKE %:locationName%) " +
             "AND (:statusName IS NULL OR status.status LIKE %:statusName%) " +
             "AND (:minMembers IS NULL OR ge.minMembers >= :minMembers) " +
-            "AND (:maxMembers IS NULL OR ge.maxMembers <= :maxMembers) ")// +
-//            "AND (:startDate IS NULL OR ge.date >= :startDate) " +
-//            "AND (:endDate IS NULL OR ge.date <= :endDate)")
+            "AND (:maxMembers IS NULL OR ge.maxMembers <= :maxMembers) " )//+
+            //"AND (:startDate IS NULL OR ge.date >= :startDate) ")// +
+            //"AND (:endDate IS NULL OR ge.date <= :endDate)")
     Page<GameEvent> findByFilters(
             @Param("name") String name,
             @Param("description") String description,
@@ -37,10 +41,9 @@ public interface GameEventRepository extends JpaRepository<GameEvent, Long> {
             @Param("statusName") String statusName,
             @Param("minMembers") Integer minMembers,
             @Param("maxMembers") Integer maxMembers,
-//            @Param("startDate") LocalDateTime startDate,
-//            @Param("endDate") ZonedDateTime endDate,
+            //@Param("startDate") ZonedDateTime startDate,
+            //@Param("endDate") String endDate,
             Pageable pageable);
-
-    Page<GameEvent> findByNameContaining(String name, Pageable pageable);
-
+    @Query("SELECT ge FROM GameEvent ge WHERE ge.maxMembers - ge.currentMembers > 0")
+    Page<GameEvent> findAllWithAvailableSlots(Pageable pageable);
 }

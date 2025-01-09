@@ -38,6 +38,7 @@ public class ProfileService {
 
     public ProfileResponseDTO createProfile(ProfileMutationDTO profileMutationDTO) {
         Profile profile = getProfileFromDTO(profileMutationDTO);
+        profile.setName(securityService.findUserName());
         profile = profileRepository.save(profile);
         return getDTOFromProfile(profile);
     }
@@ -48,10 +49,8 @@ public class ProfileService {
         Profile profile = profileRepository.findById(id)
                 .orElseThrow(() -> new ProfileExistenceException("Profile с id=" + id + " не существует"));
         if (profile.getName().equals(securityService.findUserName()) || securityService.hasAdminRole()){
-            profile.setName(profileMutationDTO.name());
-            profile.setEmail(profileMutationDTO.email());
+            profile.setName(securityService.findUserName());
             profile.setIcon(profileMutationDTO.icon());
-            profile.setPassword(profileMutationDTO.password());
             Profile updatedProfile = profileRepository.save(profile);
 
             return getDTOFromProfile(updatedProfile);
@@ -72,18 +71,14 @@ public class ProfileService {
         return new ProfileResponseDTO(
                 profile.getId(),
                 profile.getName(),
-                profile.getEmail(),
-                profile.getIcon(),
-                profile.getPassword()
+                profile.getIcon()
         );
     }
 
     protected Profile getProfileFromDTO(ProfileMutationDTO profileMutationDTO) {
         Profile profile = new Profile();
-        profile.setName(profileMutationDTO.name());
-        profile.setEmail(profileMutationDTO.email());
+        profile.setName(securityService.findUserName());
         profile.setIcon(profileMutationDTO.icon());
-        profile.setPassword(profileMutationDTO.password());
         return profile;
     }
 }

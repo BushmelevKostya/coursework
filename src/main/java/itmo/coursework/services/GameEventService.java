@@ -8,8 +8,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import java.time.format.DateTimeFormatter;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
@@ -56,6 +58,11 @@ public class GameEventService {
 
     public Page<GameEventResponseDTO> getAllGameEvents(Pageable pageable) {
         return gameEventRepository.findAll(pageable).map(this::getDTOFromGameEvent);
+    }
+
+    public Page<GameEventResponseDTO> getAvailableGameEvents(Pageable pageable) {
+        return gameEventRepository.findAllWithAvailableSlots(pageable)
+                .map(this::getDTOFromGameEvent);
     }
 
 
@@ -124,6 +131,10 @@ public class GameEventService {
         }
     }
 
+
+
+
+
     public Page<GameEventResponseDTO> filterGameEvents(
             String name,
             String description,
@@ -132,11 +143,10 @@ public class GameEventService {
             String statusName,
             Integer minMembers,
             Integer maxMembers,
-//            LocalDateTime startDate,
-//            ZonedDateTime endDate,
+            //ZonedDateTime startDate,
+            //ZonedDateTime endDate,
             Pageable pageable) {
 
-        // Вызов репозитория для фильтрации с нужными параметрами
         Page<GameEvent> gameEventsPage = gameEventRepository.findByFilters(
                 name,
                 description,
@@ -145,11 +155,9 @@ public class GameEventService {
                 statusName,
                 minMembers,
                 maxMembers,
-//                startDate,
-//                endDate,
-                pageable);
+                pageable
+        );
 
-        // Преобразуем Page<GameEvent> в Page<GameEventResponseDTO>
         return gameEventsPage.map(this::getDTOFromGameEvent);
     }
 
@@ -192,18 +200,23 @@ public class GameEventService {
 
     protected GameEvent getGameEventFromDTO(GameEventMutationDTO gameEventMutationDTO) {
         GameEvent gameEvent = new GameEvent();
-        Profile organiser = profileRepository.findById(gameEventMutationDTO.organizerId())
+        Profile organiser = profileRepository.findByName(securityService.findUserName())
                 .orElseThrow(() -> new ProfileExistenceException(
-                        "Profile огранизатора с id="
-                        + gameEventMutationDTO.organizerId()
-                        + " не существует"
-                ));
-        Profile winner = profileRepository.findById(gameEventMutationDTO.winnerId())
-                .orElseThrow(() -> new ProfileExistenceException(
-                        "Profile победителя с id="
-                                + gameEventMutationDTO.winnerId()
+                        "Profile огранизатора"
                                 + " не существует"
                 ));
+//        Profile organiser = profileRepository.findById(gameEventMutationDTO.organizerId())
+//                .orElseThrow(() -> new ProfileExistenceException(
+//                        "Profile огранизатора с id="
+//                        + gameEventMutationDTO.organizerId()
+//                        + " не существует"
+//                ));
+//        Profile winner = profileRepository.findById(gameEventMutationDTO.winnerId())
+//                .orElseThrow(() -> new ProfileExistenceException(
+//                        "Profile победителя с id="
+//                                + gameEventMutationDTO.winnerId()
+//                                + " не существует"
+//                ));
         Location location = locationRepository.findById(gameEventMutationDTO.locationId())
                 .orElseThrow(() -> new LocationExistenceException(
                         "Location с id="
@@ -228,7 +241,7 @@ public class GameEventService {
         gameEvent.setMinMembers(gameEventMutationDTO.minMembers());
         gameEvent.setMaxMembers(gameEventMutationDTO.maxMembers());
         gameEvent.setOrganiser(organiser);
-        gameEvent.setWinner(winner);
+        gameEvent.setWinner(organiser);
         gameEvent.setStatus(status);
         gameEvent.setLocation(location);
         gameEvent.setGame(game);
