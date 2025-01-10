@@ -2,14 +2,18 @@ package itmo.coursework.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import itmo.coursework.model.entity.Location;
 import itmo.coursework.model.entity.OtherEvent;
+import itmo.coursework.model.repository.LocationRepository;
 import itmo.coursework.model.repository.OtherEventRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,26 +24,29 @@ public class EventService {
 	private final OtherEventRepository otherEventRepository;
 	private final RestTemplate restTemplate;
 	private final ObjectMapper objectMapper;
+	private final LocationRepository locationRepository;
 	
-	public EventService(OtherEventRepository otherEventRepository) {
+	public EventService(OtherEventRepository otherEventRepository, LocationRepository locationRepository) {
 		this.otherEventRepository = otherEventRepository;
 		this.restTemplate = new RestTemplate();
 		this.objectMapper = new ObjectMapper();
+		this.locationRepository = locationRepository;
 	}
 	
 	public void fetchAndSaveCurrentEvents() {
 		try {
-			long currentTimestamp = Instant.now().getEpochSecond();
-			String url = API_URL + "?actual_since=" + currentTimestamp
+			List<OtherEvent> events = new ArrayList<>();
+			LocalDateTime filterDate = LocalDateTime.of(2024, 1, 1, 0, 0);
+			Timestamp filterTimestamp = Timestamp.from(filterDate.toInstant(ZoneOffset.UTC));
+			String url = API_URL + "?actual_since=" + filterTimestamp
 					+ "&fields=title,description,location,dates&page_size=100";
 			
 			String response = restTemplate.getForObject(url, String.class);
 			JsonNode root = objectMapper.readTree(response);
 			
-			List<OtherEvent> events = new ArrayList<>();
 			for (JsonNode result : root.get("results")) {
 				OtherEvent event = parseEvent(result);
-				if (event != null) {
+				if (event != null && event.getDate().isAfter(filterDate)) {
 					events.add(event);
 				}
 			}
@@ -64,6 +71,10 @@ public class EventService {
 				event.setName(title);
 				event.setDescription(description);
 				event.setDate(date);
+				Location location = new Location();
+				location.setAddress(node.get("location").get("slug").asText());
+				locationRepository.save(location);
+				event.setLocation(location);
 				return event;
 			}
 		} catch (Exception e) {
