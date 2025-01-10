@@ -47,7 +47,7 @@ export class AppKeycloakService {
         if (refreshed) {
           this.keycloakService.getToken().then(token => {
             localStorage.setItem('token', token!);
-            console.log('Token refreshed and saved to localStorage:', token);
+            console.log('Token refreshed and saved to localStorage');
           });
         }
       }).catch(err => {

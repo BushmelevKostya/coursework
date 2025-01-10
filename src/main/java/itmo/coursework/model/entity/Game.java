@@ -10,11 +10,13 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "game")
+@Table(name = "game", indexes = {
+		@Index(name = "idx_game_name", columnList = "name")
+})
 @NoArgsConstructor
 @AllArgsConstructor
 public class Game {
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;

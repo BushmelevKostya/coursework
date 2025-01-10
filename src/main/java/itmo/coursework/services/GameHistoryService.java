@@ -6,6 +6,7 @@ import itmo.coursework.dto.ProfileResponseDTO;
 import itmo.coursework.exceptions.entity.impl.GameHistoryExistenceException;
 import itmo.coursework.exceptions.entity.impl.ProfileExistenceException;
 import itmo.coursework.model.entity.GameHistory;
+import itmo.coursework.model.entity.GameResult;
 import itmo.coursework.model.entity.Profile;
 import itmo.coursework.model.repository.GameHistoryRepository;
 import itmo.coursework.model.repository.ProfileRepository;

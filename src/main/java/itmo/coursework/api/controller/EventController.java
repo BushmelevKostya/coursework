@@ -8,14 +8,15 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/events")
+@CrossOrigin(origins = "http://localhost:4200")
 public class EventController {
+	
 	@Autowired
 	private GameEventRepository gameEventRepository;
 	
 	@PostMapping("/create")
 	public GameEvent createEvent(@RequestBody @Valid GameEvent gameEvent) {
-		System.out.println(gameEvent);
-		GameEvent ge = gameEventRepository.save(gameEvent);
-		return ge;
+		System.out.println("Создание события: " + gameEvent);
+		return gameEventRepository.save(gameEvent);
 	}
 }
