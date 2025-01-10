@@ -7,6 +7,7 @@ import itmo.coursework.model.entity.Game;
 import itmo.coursework.model.repository.GameRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,8 +32,8 @@ public class GameService {
     }
 
 
-    //TODO admin method
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public GameResponseDTO createGame(GameMutationDTO gameMutationDTO) {
         Game game = getGameFromDTO(gameMutationDTO);
         game = gameRepository.save(game);
@@ -41,8 +42,8 @@ public class GameService {
     }
 
 
-    //TODO admin method
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public GameResponseDTO updateGame(Long id, GameMutationDTO gameMutationDTO) {
         Game game = gameRepository.findById(id)
                 .orElseThrow(() -> new GameExistenceException("Game с id=" + id + " не существует"));
@@ -55,7 +56,12 @@ public class GameService {
         return getDTOFromGame(updatedGame);
     }
 
-    //TODO подумать над логикой удаления
+
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteGame(Long id) {
+        gameRepository.deleteById(id);
+    }
 
     protected GameResponseDTO getDTOFromGame(Game game) {
         return new GameResponseDTO(

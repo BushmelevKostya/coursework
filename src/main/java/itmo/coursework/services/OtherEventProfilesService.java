@@ -4,7 +4,6 @@ import itmo.coursework.dto.OtherEventProfilesMutationDTO;
 import itmo.coursework.dto.OtherEventProfilesResponseDTO;
 import itmo.coursework.dto.OtherEventResponseDTO;
 import itmo.coursework.dto.ProfileResponseDTO;
-import itmo.coursework.exceptions.entity.impl.GameEventProfilesException;
 import itmo.coursework.exceptions.entity.impl.OtherEventExistenceException;
 import itmo.coursework.exceptions.entity.impl.OtherEventProfilesExistenceException;
 import itmo.coursework.exceptions.entity.impl.ProfileExistenceException;
@@ -16,6 +15,7 @@ import itmo.coursework.model.repository.OtherEventRepository;
 import itmo.coursework.model.repository.ProfileRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,8 +48,8 @@ public class OtherEventProfilesService {
     }
 
 
-    //TODO admin method
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public OtherEventProfilesResponseDTO createOtherEventProfile(OtherEventProfilesMutationDTO otherEventProfilesMutationDTO) {
         OtherEventProfiles otherEventProfiles = getOtherEventProfilesFromDTO(otherEventProfilesMutationDTO);
         otherEventProfilesRepository.save(otherEventProfiles);
@@ -58,8 +58,8 @@ public class OtherEventProfilesService {
     }
 
 
-    //TODO admin method
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public OtherEventProfilesResponseDTO updateOtherEventProfile(Long id, OtherEventProfilesMutationDTO otherEventProfilesMutationDTO) {
         OtherEventProfiles otherEventProfiles = otherEventProfilesRepository.findById(id)
                 .orElseThrow(() -> new OtherEventProfilesExistenceException("OtherEventProfiles с id=" + id + " не существует"));
@@ -79,6 +79,13 @@ public class OtherEventProfilesService {
         otherEventProfiles = otherEventProfilesRepository.save(otherEventProfiles);
 
         return getDTOFromOtherEventProfiles(otherEventProfiles);
+    }
+
+
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteOtherEventProfile(Long id) {
+        otherEventProfilesRepository.deleteById(id);
     }
 
     private OtherEventProfilesResponseDTO getDTOFromOtherEventProfiles(OtherEventProfiles otherEventProfiles) {

@@ -6,6 +6,7 @@ import itmo.coursework.services.GameHistoryService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -41,5 +42,12 @@ public class GameHistoryController {
     @PutMapping("/{id}")
     public GameHistoryResponseDTO updateGameHistory(@PathVariable Long id, @RequestBody GameHistoryMutationDTO gameHistoryMutationDTO) {
         return gameHistoryService.updateGameHistory(id, gameHistoryMutationDTO);
+    }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteGameHistory(@PathVariable Long id) {
+        gameHistoryService.deleteGameHistory(id);
+        return ResponseEntity.ok().build();
     }
 }

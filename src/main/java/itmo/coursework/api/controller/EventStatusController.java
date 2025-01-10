@@ -7,6 +7,7 @@ import itmo.coursework.services.EventStatusService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -43,5 +44,12 @@ public class EventStatusController {
     public EventStatusResponseDTO updateEventStatus(@PathVariable Long id,
                                                     @RequestBody EventStatusMutationDTO eventStatusMutationDTO) {
         return eventStatusService.updateEventStatus(id, eventStatusMutationDTO);
+    }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteEventStatus(@PathVariable Long id) {
+        eventStatusService.deleteEventStatus(id);
+        return ResponseEntity.ok().build();
     }
 }

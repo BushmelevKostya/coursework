@@ -18,10 +18,10 @@ public class GameEventProfiles {
 	private Long id;
 	
 	@ManyToOne
-	@JoinColumn(name = "profileId")
+	@JoinColumn(name = "profileId", nullable = false)
 	private Profile profile;
 	
 	@ManyToOne
-	@JoinColumn(name = "gameId")
+	@JoinColumn(name = "gameId", nullable = false)
 	private GameEvent gameEvent;
 }

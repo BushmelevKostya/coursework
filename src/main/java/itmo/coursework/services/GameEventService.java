@@ -9,6 +9,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
 @Service
 public class GameEventService {
 
@@ -21,6 +24,9 @@ public class GameEventService {
     private final ProfileRepository profileRepository;
     private final EventStatusService eventStatusService;
     private final EventStatusRepository eventStatusRepository;
+    private final SecurityService securityService;
+    private final GameEventProfilesRepository gameEventProfilesRepository;
+    private final ShedulerService schedulerService;
 
 
     public GameEventService(GameEventRepository gameEventRepository,
@@ -31,7 +37,9 @@ public class GameEventService {
                             ProfileService profileService,
                             ProfileRepository profileRepository,
                             EventStatusService eventStatusService,
-                            EventStatusRepository eventStatusRepository) {
+                            EventStatusRepository eventStatusRepository,
+                            SecurityService securityService,
+                            GameEventProfilesRepository gameEventProfilesRepository, ShedulerService schedulerService) {
         this.gameEventRepository = gameEventRepository;
         this.gameRepository = gameRepository;
         this.gameService = gameService;
@@ -41,11 +49,19 @@ public class GameEventService {
         this.profileRepository = profileRepository;
         this.eventStatusService = eventStatusService;
         this.eventStatusRepository = eventStatusRepository;
+        this.securityService = securityService;
+        this.gameEventProfilesRepository = gameEventProfilesRepository;
+        this.schedulerService = schedulerService;
     }
 
 
     public Page<GameEventResponseDTO> getAllGameEvents(Pageable pageable) {
         return gameEventRepository.findAll(pageable).map(this::getDTOFromGameEvent);
+    }
+
+    public Page<GameEventResponseDTO> getAvailableGameEvents(Pageable pageable) {
+        return gameEventRepository.findAllWithAvailableSlots(pageable)
+                .map(this::getDTOFromGameEvent);
     }
 
 
@@ -59,17 +75,17 @@ public class GameEventService {
     }
 
 
-    //TODO admin method
     @Transactional
     public GameEventResponseDTO createGameEvent(GameEventMutationDTO gameEventMutationDTO) {
         GameEvent gameEvent = getGameEventFromDTO(gameEventMutationDTO);
+        gameEvent.setCurrentMembers(1);
+        // this.schedulerService.scheduleDeletion(gameEvent, Duration.between(LocalDateTime.now(), gameEvent.getDate()));
         gameEvent = gameEventRepository.save(gameEvent);
 
         return getDTOFromGameEvent(gameEvent);
     }
 
 
-    //TODO admin method
     @Transactional
     public GameEventResponseDTO updateGameEvent(Long id, GameEventMutationDTO gameEventMutationDTO) {
         GameEvent gameEvent = gameEventRepository.findById(id)
@@ -78,23 +94,98 @@ public class GameEventService {
                                 + id
                                 + " не существует"
                 ));
-        GameEvent gameEventToUpdate = getGameEventFromDTO(gameEventMutationDTO);
-        gameEvent.setName(gameEventToUpdate.getName());
-        gameEvent.setDescription(gameEventToUpdate.getDescription());
-        gameEvent.setLocation(gameEventToUpdate.getLocation());
-        gameEvent.setDate(gameEventToUpdate.getDate());
-        gameEvent.setStatus(gameEventToUpdate.getStatus());
-        gameEvent.setOrganiser(gameEventToUpdate.getOrganiser());
-        gameEvent.setWinner(gameEventToUpdate.getWinner());
-        gameEvent.setGame(gameEventToUpdate.getGame());
-        gameEvent.setMinMembers(gameEventToUpdate.getMinMembers());
-        gameEvent.setMaxMembers(gameEventToUpdate.getMaxMembers());
 
-        GameEvent updatedGameEvent = gameEventRepository.save(gameEvent);
-        return getDTOFromGameEvent(updatedGameEvent);
+        GameEvent gameEventToUpdate = getGameEventFromDTO(gameEventMutationDTO);
+        if (gameEvent.getOrganiser() == gameEventToUpdate.getOrganiser()) {
+            gameEvent.setName(gameEventToUpdate.getName());
+            gameEvent.setDescription(gameEventToUpdate.getDescription());
+            gameEvent.setLocation(gameEventToUpdate.getLocation());
+            gameEvent.setDate(gameEventToUpdate.getDate());
+            gameEvent.setStatus(gameEventToUpdate.getStatus());
+            gameEvent.setOrganiser(gameEventToUpdate.getOrganiser());
+            gameEvent.setWinner(gameEventToUpdate.getWinner());
+            gameEvent.setGame(gameEventToUpdate.getGame());
+            gameEvent.setMinMembers(gameEventToUpdate.getMinMembers());
+            gameEvent.setMaxMembers(gameEventToUpdate.getMaxMembers());
+
+            GameEvent updatedGameEvent = gameEventRepository.save(gameEvent);
+            return getDTOFromGameEvent(updatedGameEvent);
+        }
+        throw new GameEventExistenceException(
+                "GameEvent с id="
+                        + id
+                        + "  принадлежащей вам не существует"
+        );
     }
 
-    protected GameEventResponseDTO getDTOFromGameEvent(GameEvent gameEvent) {
+//    @Transactional
+//    public void deleteGameEvent(Long id) {
+//        GameEvent gameEvent = gameEventRepository.findById(id)
+//                .orElseThrow(() -> new GameEventExistenceException(
+//                        "GameEvent с id="
+//                                + id
+//                                + " не существует"
+//                ));
+//        if (Objects.equals(gameEvent.getOrganiser().getName(), securityService.findUserName())) {
+//            gameEventRepository.deleteById(id);
+//        }
+//    }
+
+
+    public String deleteGameEvent(Long id, GameEventMutationDTO gameEventMutationDTO) {
+        GameEvent gameEvent = gameEventRepository.findById(id)
+                .orElseThrow(() -> new GameEventExistenceException(
+                        "GameEvent с id="
+                                + id
+                                + " не существует"
+                ));
+        schedulerService.deleteGameEvent(gameEvent);
+        return "успешно удалено";
+    }
+
+
+
+    public Page<GameEventResponseDTO> filterGameEvents(
+            String name,
+            String description,
+            String gameName,
+            String locationName,
+            String statusName,
+            Integer minMembers,
+            Integer maxMembers,
+            Pageable pageable) {
+
+        Page<GameEvent> gameEventsPage = gameEventRepository.findByFilters(
+                name,
+                description,
+                gameName,
+                locationName,
+                statusName,
+                minMembers,
+                maxMembers,
+                pageable
+        );
+
+        return gameEventsPage.map(this::getDTOFromGameEvent);
+    }
+
+    public List<GameEventResponseDTO> findRecommendedEvents(Long profileId) {
+        Optional<Long> mostFrequentGameId = gameEventRepository.findMostFrequentGameId();
+        List<Long> favouriteGamesIds = gameEventRepository.findFavouriteGameIdsByProfile(profileId);
+        List<Long> otherProfilesWithSimilarGames = gameEventRepository.findProfilesWithSimilarFavouriteGames(favouriteGamesIds, profileId);
+
+        List<Long> recommendedGameIds = gameEventRepository.findRecommendedGameIds(otherProfilesWithSimilarGames, favouriteGamesIds);
+
+        Set<Long> allRecommendedGameIds = new HashSet<>(recommendedGameIds);
+        mostFrequentGameId.ifPresent(allRecommendedGameIds::add);
+
+        List<GameEvent> recommendedEvents = gameEventRepository.findEventsByGameIds(new ArrayList<>(allRecommendedGameIds));
+        return recommendedEvents.stream()
+                .map(this::getDTOFromGameEvent)
+                .collect(Collectors.toList());
+}
+
+    public GameEventResponseDTO getDTOFromGameEvent(GameEvent gameEvent) {
         if (gameEvent.getGame() == null) {
             throw new GameExistenceException("Game не существует");
         }
@@ -120,6 +211,7 @@ public class GameEventService {
                 gameEvent.getName(),
                 gameEvent.getDescription(),
                 gameEvent.getDate(),
+                gameEvent.getCurrentMembers(),
                 gameEvent.getMinMembers(),
                 gameEvent.getMaxMembers(),
                 winnerResponseDTO,
@@ -132,18 +224,23 @@ public class GameEventService {
 
     protected GameEvent getGameEventFromDTO(GameEventMutationDTO gameEventMutationDTO) {
         GameEvent gameEvent = new GameEvent();
-        Profile organiser = profileRepository.findById(gameEventMutationDTO.organizerId())
+        Profile organiser = profileRepository.findByName(securityService.findUserName())
                 .orElseThrow(() -> new ProfileExistenceException(
-                        "Profile огранизатора с id="
-                        + gameEventMutationDTO.organizerId()
-                        + " не существует"
-                ));
-        Profile winner = profileRepository.findById(gameEventMutationDTO.winnerId())
-                .orElseThrow(() -> new ProfileExistenceException(
-                        "Profile победителя с id="
-                                + gameEventMutationDTO.winnerId()
+                        "Profile огранизатора"
                                 + " не существует"
                 ));
+//        Profile organiser = profileRepository.findById(gameEventMutationDTO.organizerId())
+//                .orElseThrow(() -> new ProfileExistenceException(
+//                        "Profile огранизатора с id="
+//                        + gameEventMutationDTO.organizerId()
+//                        + " не существует"
+//                ));
+//        Profile winner = profileRepository.findById(gameEventMutationDTO.winnerId())
+//                .orElseThrow(() -> new ProfileExistenceException(
+//                        "Profile победителя с id="
+//                                + gameEventMutationDTO.winnerId()
+//                                + " не существует"
+//                ));
         Location location = locationRepository.findById(gameEventMutationDTO.locationId())
                 .orElseThrow(() -> new LocationExistenceException(
                         "Location с id="
@@ -168,7 +265,7 @@ public class GameEventService {
         gameEvent.setMinMembers(gameEventMutationDTO.minMembers());
         gameEvent.setMaxMembers(gameEventMutationDTO.maxMembers());
         gameEvent.setOrganiser(organiser);
-        gameEvent.setWinner(winner);
+        gameEvent.setWinner(organiser);
         gameEvent.setStatus(status);
         gameEvent.setLocation(location);
         gameEvent.setGame(game);

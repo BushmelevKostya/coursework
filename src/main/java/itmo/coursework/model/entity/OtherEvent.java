@@ -21,13 +21,14 @@ public class OtherEvent {
 	private Long id;
 	
 	private String name;
+	@Column(columnDefinition = "TEXT")
 	private String description;
 	private LocalDateTime date;
 	
 	@ManyToOne
 	private Location location;
 	
-	@OneToMany(mappedBy = "otherEvent")
+	@OneToMany(mappedBy = "otherEvent", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<OtherEventProfiles> otherEventProfiles;
 	
 }

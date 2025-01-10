@@ -46,21 +46,25 @@ public class GameEventProfilesService {
     }
 
 
-    //TODO admin method
     @Transactional
     public GameEventProfilesResponseDTO createGameEventProfile(GameEventProfilesMutationDTO gameEventProfilesMutationDTO) {
         GameEventProfiles gameEventProfiles = getGameEventProfilesFromDTO(gameEventProfilesMutationDTO);
         gameEventProfiles = gameEventProfilesRepository.save(gameEventProfiles);
-
+        GameEvent gameEvent = gameEventRepository.findById(gameEventProfiles.getGameEvent().getId())
+                .orElseThrow(() -> new GameEventExistenceException("GameEvent не существует"));
+        gameEvent.setCurrentMembers(gameEventProfilesRepository.countByGameEvent(gameEvent)+1);
+        gameEventRepository.save(gameEvent);
         return getDTOFromGameEventProfiles(gameEventProfiles);
     }
 
 
-    //TODO admin method
     @Transactional
     public GameEventProfilesResponseDTO updateGameEventProfile(Long id, GameEventProfilesMutationDTO gameEventProfilesMutationDTO) {
         GameEventProfiles gameEventProfiles = gameEventProfilesRepository.findById(id)
                 .orElseThrow(() -> new GameEventProfilesException("GameEventProfiles с id=" + id + " не существует"));
+        GameEvent oldEvent = gameEventProfiles.getGameEvent();
+        oldEvent.setCurrentMembers(oldEvent.getCurrentMembers()-1);
+        gameEventRepository.save(oldEvent);
         GameEvent gameEvent = gameEventRepository.findById(gameEventProfilesMutationDTO.eventId())
                 .orElseThrow(() -> new GameEventExistenceException("GameEvent с id=" + gameEventProfilesMutationDTO.eventId() + " не существует"));
         Profile profile = profileRepository.findById(gameEventProfilesMutationDTO.profileId())
@@ -68,6 +72,8 @@ public class GameEventProfilesService {
         gameEventProfiles.setProfile(profile);
         gameEventProfiles.setGameEvent(gameEvent);
         gameEventProfiles = gameEventProfilesRepository.save(gameEventProfiles);
+        gameEvent.setCurrentMembers(gameEventProfilesRepository.countByGameEvent(gameEvent));
+        gameEventRepository.save(gameEvent);
 
         return getDTOFromGameEventProfiles(gameEventProfiles);
     }

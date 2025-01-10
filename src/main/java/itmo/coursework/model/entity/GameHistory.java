@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Getter
 @Setter
@@ -20,11 +21,11 @@ public class GameHistory {
 	private Long id;
 	
 	private String eventName;
-	private LocalDateTime dateEvent;
+	private ZonedDateTime dateEvent;
 	private String gameResult;
 	
 	@ManyToOne
-	@JoinColumn(name = "profileId")
+	@JoinColumn(name = "profileId", nullable = false)
 	private Profile profile;
 	
 }

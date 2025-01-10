@@ -6,6 +6,7 @@ import itmo.coursework.services.GameGenreService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -41,5 +42,12 @@ public class GameGenreController {
     @PutMapping("/{id}")
     public GameGenreResponseDTO updateGameGenre(@PathVariable Long id, @RequestBody GameGenreMutationDTO gameGenreMutationDTO) {
         return gameGenreService.updateGameGenre(id, gameGenreMutationDTO);
+    }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteGameGenre(@PathVariable Long id) {
+        gameGenreService.deleteGameGenre(id);
+        return ResponseEntity.ok().build();
     }
 }

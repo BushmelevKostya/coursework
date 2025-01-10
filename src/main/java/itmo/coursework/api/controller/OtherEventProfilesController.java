@@ -7,6 +7,7 @@ import itmo.coursework.services.OtherEventProfilesService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -43,5 +44,12 @@ public class OtherEventProfilesController {
     public OtherEventProfilesResponseDTO updateOtherEventProfiles(@PathVariable Long id,
                                                                   @RequestBody OtherEventProfilesMutationDTO otherEventProfilesMutationDTO) {
         return otherEventProfilesService.updateOtherEventProfile(id, otherEventProfilesMutationDTO);
+    }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteOtherEventProfiles(@PathVariable Long id) {
+        otherEventProfilesService.deleteOtherEventProfile(id);
+        return ResponseEntity.ok().build();
     }
 }

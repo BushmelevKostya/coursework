@@ -25,6 +25,6 @@ public class Location {
 	@JoinColumn(name = "districtId")
 	private District district;
 	
-	@OneToMany(mappedBy = "location")
+	@OneToMany(mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<OtherEvent> otherEvents;
 }

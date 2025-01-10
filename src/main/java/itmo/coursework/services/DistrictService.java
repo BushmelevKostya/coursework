@@ -12,6 +12,7 @@ import itmo.coursework.model.repository.CityRepository;
 import itmo.coursework.model.repository.DistrictRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,7 +45,7 @@ public class DistrictService {
     }
 
 
-    //TODO admin method
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public DistrictResponseDTO createDistrict(DistrictMutationDTO districtMutationDTO) {
         District district = getDistrictFromDTO(districtMutationDTO);
@@ -54,8 +55,8 @@ public class DistrictService {
     }
 
 
-    //TODO admin method
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public DistrictResponseDTO updateDistrict(Long id, DistrictMutationDTO districtMutationDTO) {
         District district = districtRepository.findById(id)
                 .orElseThrow(() -> new DistrictExistenceException(
@@ -70,6 +71,13 @@ public class DistrictService {
         District updatedDistrict = districtRepository.save(district);
         return getDTOFromDistrict(updatedDistrict);
 
+    }
+
+
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteDistrictById(Long id) {
+        districtRepository.deleteById(id);
     }
 
 

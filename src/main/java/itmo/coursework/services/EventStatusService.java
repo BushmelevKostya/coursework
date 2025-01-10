@@ -7,6 +7,7 @@ import itmo.coursework.model.entity.EventStatus;
 import itmo.coursework.model.repository.EventStatusRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,16 +32,16 @@ public class EventStatusService {
     }
 
 
-    //TODO admin method
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public EventStatusResponseDTO createEventStatus(EventStatusMutationDTO eventStatusMutationDTO) {
         EventStatus eventStatus = eventStatusRepository.save(getEventStatusFromDTO(eventStatusMutationDTO));
         return getDTOFromEventStatus(eventStatus);
     }
 
 
-    //TODO admin method
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public EventStatusResponseDTO updateEventStatus(Long id, EventStatusMutationDTO eventStatusMutationDTO) {
         EventStatus eventStatus = eventStatusRepository.findById(id)
                 .orElseThrow(() -> new EventStatusExistenceException("EventStatus с id=" + id + "не существует"));
@@ -48,6 +49,13 @@ public class EventStatusService {
         EventStatus updatedEventStatus = eventStatusRepository.save(eventStatus);
 
         return getDTOFromEventStatus(updatedEventStatus);
+    }
+
+
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteEventStatus(Long id) {
+        eventStatusRepository.deleteById(id);
     }
 
     protected EventStatusResponseDTO getDTOFromEventStatus(EventStatus eventStatus) {

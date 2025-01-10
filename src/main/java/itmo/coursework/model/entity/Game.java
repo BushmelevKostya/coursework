@@ -10,7 +10,9 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "game")
+@Table(name = "game", indexes = {
+		@Index(name = "idx_game_name", columnList = "name")
+})
 @NoArgsConstructor
 @AllArgsConstructor
 public class Game {
@@ -24,12 +26,12 @@ public class Game {
 	private int minPlayers;
 	private int maxPlayers;
 	
-	@OneToMany(mappedBy = "game")
+	@OneToMany(mappedBy = "game",cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<FavouriteGames> favouriteGames;
 	
-	@OneToMany(mappedBy = "game")
+	@OneToMany(mappedBy = "game",cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<GameEvent> gameEvents;
 	
-	@OneToMany(mappedBy = "game")
+	@OneToMany(mappedBy = "game",cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<GameGenre> gameGenres;
 }

@@ -11,7 +11,8 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "city")
+@Table(name = "city", indexes = {
+		@Index(name = "idx_city_name", columnList = "name")})
 @NoArgsConstructor
 @AllArgsConstructor
 public class City {
@@ -21,7 +22,7 @@ public class City {
 	
 	private String name;
 	
-	@OneToMany(mappedBy = "city")
+	@OneToMany(mappedBy = "city", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<District> districts;
 }
 

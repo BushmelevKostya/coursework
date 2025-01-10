@@ -7,6 +7,7 @@ import itmo.coursework.services.LocationService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -42,5 +43,12 @@ public class LocationController {
     public LocationResponseDTO updateLocation(@PathVariable Long id,
                                               @RequestBody LocationMutationDTO locationMutationDTO) {
         return locationService.updateLocation(id, locationMutationDTO);
+    }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteLocation(@PathVariable Long id) {
+        locationService.deleteLocation(id);
+        return ResponseEntity.ok().build();
     }
 }

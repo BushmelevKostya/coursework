@@ -11,7 +11,9 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "district")
+@Table(name = "district", indexes = {
+		@Index(name = "idx_district_name", columnList = "name")
+})
 @NoArgsConstructor
 @AllArgsConstructor
 public class District {
@@ -21,10 +23,10 @@ public class District {
 	
 	private String name;
 	
-	@ManyToOne
-	@JoinColumn(name = "cityId")
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "cityId", nullable = false)
 	private City city;
 	
-	@OneToMany(mappedBy = "district")
+	@OneToMany(mappedBy = "district",cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<Location> locations;
 }
