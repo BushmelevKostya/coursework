@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { KeycloakService } from 'keycloak-angular';
-import { keycloakConfig } from './keycloak.config';
+import { keycloakConfig, keycloakInitOptions } from './keycloak.config';
 
 @Injectable({
   providedIn: 'root',
@@ -13,11 +13,7 @@ export class AppKeycloakService {
   initKeycloak(): Promise<boolean> {
     return this.keycloakService.init({
       config: keycloakConfig,
-      initOptions: {
-        onLoad: 'login-required',
-        checkLoginIframe: false,
-        redirectUri: 'http://localhost:4200',
-      },
+      initOptions: keycloakInitOptions,
       loadUserProfileAtStartUp: true,
     }).then(() => {
       return this.keycloakService.getToken().then(token => {

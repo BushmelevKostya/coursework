@@ -1,7 +1,15 @@
-import {KeycloakConfig} from 'keycloak-js';
+import { KeycloakConfig, KeycloakInitOptions } from 'keycloak-js';
 
 export const keycloakConfig: KeycloakConfig = {
   url: 'https://localhost:9443/',
-  realm: 'realm',
-  clientId: 'kos',
+  realm: 'devrealm',
+  clientId: 'pub-dev',
+};
+
+export const keycloakInitOptions: KeycloakInitOptions = {
+  onLoad: 'login-required',
+  pkceMethod: 'S256',
+  redirectUri: 'http://localhost:4200',
+  silentCheckSsoRedirectUri: window.location.origin + '/assets/silent-check-sso.html',
+  checkLoginIframe: false,
 };
