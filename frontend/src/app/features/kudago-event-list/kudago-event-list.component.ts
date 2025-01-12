@@ -15,14 +15,14 @@ import {RequestService} from '../../service/request.service';
 })
 export class KudagoEventListComponent implements OnInit {
   events: any[] = [];
-  apiUrl = 'api/v1/otherevents';
+  apiUrl = 'api/v1/otherevent';
 
   constructor(private requestService: RequestService) {}
 
   ngOnInit(): void {
     this.requestService.getInfo(this.apiUrl).subscribe(
       (data) => {
-        this.events = data;
+        this.events = data.content;
       },
       (error) => {
       }
