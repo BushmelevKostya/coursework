@@ -22,7 +22,6 @@ export class IconFormComponent {
   ngOnInit(): void {
     setTimeout(() => {
       this.username = this.getUsernameFromKeycloak();
-      console.log(this.username);
       this.checkUserProfile();
     }, 500)
   }
@@ -34,7 +33,10 @@ export class IconFormComponent {
   checkUserProfile(): void {
     this.requestService.getInfo(this.url + "/username/" + `${this.username}`)
       .subscribe(
-        () => this.router.navigate(['/']),
+        (response) => {
+          localStorage.setItem('profileId', response.id)
+          this.router.navigate(['/'])
+        },
         (error) => {
           if (error.status !== 404) {
             console.error('Ошибка проверки профиля', error);
@@ -77,7 +79,10 @@ export class IconFormComponent {
   saveProfile(formData: any) {
     this.requestService.postInfo(formData, this.url)
       .subscribe(
-        () => this.router.navigate(['/']),
+        (response) => {
+          localStorage.setItem('profileId', response.id)
+          this.router.navigate(['/'])
+        },
         (error) => console.error('Ошибка сохранения профиля', error)
       );
   }

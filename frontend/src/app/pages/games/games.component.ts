@@ -4,10 +4,13 @@ import {NavbarComponent} from '../../shared/navbar/navbar.component';
 import {RequestService} from '../../service/request.service';
 
 interface Game {
+  id: number;
   image: string;
   name: string;
-  players: string;
+  minPlayers: number;
+  maxPlayers: number;
   genre: string;
+  isFavorite?: boolean;
 }
 
 @Component({
@@ -23,7 +26,7 @@ interface Game {
   providers: [RequestService]
 })
 export class GamesComponent {
-  games: any[] = [];
+  games: Game[] = [];
   url = 'api/v1/game';
   constructor(private requestService: RequestService) {
 
@@ -32,13 +35,41 @@ export class GamesComponent {
   ngOnInit() {
     this.requestService.getInfo(this.url).subscribe(
       (response) => {
-        this.games = response.content;
-        console.log(this.games);
+        this.games = response.content.map((game: Game) => ({
+          ...game,
+          isFavorite: false
+        }));
       },
       (error) => {
         console.error('Ошибка при загрузке данных', error);
         this.games = [];
       }
     );
+  }
+
+  toggleFavorite(game: Game) {
+    game.isFavorite = !game.isFavorite;
+    const favoriteUrl = `api/v1/favouritegames`;
+    const data = {
+      gameId: game.id,
+      profileId: localStorage.getItem("profileId")
+    }
+    if (game.isFavorite) {
+      this.requestService.postInfo(data, favoriteUrl).subscribe(
+        () => {
+        },
+        (error) => {
+          game.isFavorite = !game.isFavorite;
+        }
+      );
+    } else {
+      this.requestService.deleteInfo(data, favoriteUrl).subscribe(
+        () => {
+        },
+        (error) => {
+          game.isFavorite = !game.isFavorite;
+        }
+      );
+    }
   }
 }

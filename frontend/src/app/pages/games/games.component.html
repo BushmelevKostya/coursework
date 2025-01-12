@@ -9,5 +9,11 @@
       <p><strong>Жанр:</strong> {{game.genre}}</p>
     </div>
     <button class="join-button">Записаться</button>
+    <span
+      class="favorite-icon"
+      [class.favorite]="game.isFavorite"
+      (click)="toggleFavorite(game)">
+      &#9733;
+    </span>
   </div>
 </div>

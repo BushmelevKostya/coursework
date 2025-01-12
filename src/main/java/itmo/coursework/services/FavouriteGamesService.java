@@ -77,8 +77,9 @@ public class FavouriteGamesService {
     }
 
     @Transactional
-    public void deleteFavouriteGames(Long id) {
-        deleteFavouriteGames(id);
+    public void deleteFavouriteGames(Long gameId, Long profileId) {
+        favouriteGamesRepository.deleteByGameIdAndProfileId(gameId, profileId)
+                .orElseThrow(() -> new GameExistenceException("Game с gameId=" + gameId + " и profileId=" + profileId + " не существует"));
     }
 
 
