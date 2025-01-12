@@ -26,7 +26,6 @@ export class EventListComponent implements OnInit{
     this.requestService.getInfo(this.url).subscribe(
       (response) => {
         this.events = response.content;
-        console.log(this.events);
       },
       (error) => {
         console.error('Ошибка при загрузке данных', error);

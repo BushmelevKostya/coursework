@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {RequestService} from '../../service/request.service';
 import {RouterLink, Router} from '@angular/router';
 
@@ -10,7 +10,7 @@ import {RouterLink, Router} from '@angular/router';
   styleUrl: './icon-form.component.css',
   providers: [RequestService]
 })
-export class IconFormComponent {
+export class IconFormComponent implements OnInit{
   selectedImage: File | null = null;
   username: string | null = null;
   private url = "api/v1/profile";
@@ -31,7 +31,7 @@ export class IconFormComponent {
   }
 
   checkUserProfile(): void {
-    this.requestService.getInfo(this.url + "/username/" + `${this.username}`)
+    this.requestService.getInfo(this.url + "/username")
       .subscribe(
         (response) => {
           localStorage.setItem('profileId', response.id)
@@ -58,9 +58,9 @@ export class IconFormComponent {
       this.convertImageToString(this.selectedImage)
         .then((imageString) => {
           const profileData = {
-            username: this.username,
-            icon: imageString,
+            icon: imageString
           };
+
 
           this.saveProfile(profileData);
         })
@@ -70,7 +70,7 @@ export class IconFormComponent {
   skip(): void {
     if (this.username) {
       const profileData = {
-        username: this.username
+        icon: ''
       };
       this.saveProfile(profileData)
     }

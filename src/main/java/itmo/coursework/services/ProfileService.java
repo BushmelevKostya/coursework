@@ -82,8 +82,8 @@ public class ProfileService {
         return profile;
     }
 	
-	public ProfileResponseDTO getProfileByUsername(String username) {
-        return profileRepository.findByName(username).map(this::getDTOFromProfile)
-                .orElseThrow(() -> new ProfileExistenceException("Profile с username=" + username + " не существует"));
+	public ProfileResponseDTO getProfileByUsername() {
+        return profileRepository.findByName(securityService.findUserName()).map(this::getDTOFromProfile)
+                .orElseThrow(() -> new ProfileExistenceException("Profile с username=" + securityService.findUserName() + " не существует"));
 	}
 }

@@ -1,5 +1,4 @@
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {NgForm} from "@angular/forms";
 import {Injectable} from "@angular/core";
 import {Observable} from 'rxjs';
 
@@ -8,7 +7,7 @@ export class RequestService {
   constructor(private http: HttpClient) {
   }
 
-  url = 'http://localhost:8080/';
+  url = '';
 
   postInfo(data: any, url: string):Observable<any> {
     let token = localStorage.getItem('token');
@@ -19,6 +18,17 @@ export class RequestService {
     });
 
     return this.http.post(this.url + url, data, {headers});
+  }
+
+  deleteInfo(data:any, url: string):Observable<any> {
+    let token = localStorage.getItem('token');
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    });
+
+    return this.http.delete(this.url + url + "/" + `${data.gameId}` + "/" + `${data.profileId}`, {headers});
   }
 
   getInfo(url: string):Observable<any> {
