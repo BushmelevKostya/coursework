@@ -81,4 +81,9 @@ public class ProfileService {
         profile.setIcon(profileMutationDTO.icon());
         return profile;
     }
+	
+	public ProfileResponseDTO getProfileByUsername(String username) {
+        return profileRepository.findByName(username).map(this::getDTOFromProfile)
+                .orElseThrow(() -> new ProfileExistenceException("Profile с username=" + username + " не существует"));
+	}
 }

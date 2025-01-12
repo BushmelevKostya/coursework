@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
-import {NgForOf} from '@angular/common';
+import {Component, OnInit} from '@angular/core';
+import {NgForOf, NgIf} from '@angular/common';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
+import {RequestService} from '../../service/request.service';
 
 @Component({
   selector: 'app-event-list',
@@ -8,22 +9,31 @@ import {HttpClient, HttpClientModule} from '@angular/common/http';
   standalone: true,
   imports: [
     NgForOf,
-    HttpClientModule
+    HttpClientModule,
+    NgIf
   ],
-  styleUrls: ['./event-list.component.css']
+  styleUrls: ['./event-list.component.css'],
+  providers: [RequestService]
 })
-export class EventListComponent {
-  constructor(private http: HttpClient) {
+export class EventListComponent implements OnInit{
+  events: any[] = [];
+  url = 'api/v1/gameevent';
+  constructor(private requestService: RequestService) {
 
   }
 
-  events = [
-    { title: 'Мероприятие 1', description: 'Описание первого мероприятия', author: 'Иван', occupiedSeats: 5, totalSeats: 10 },
-    { title: 'Мероприятие 2', description: 'Описание второго мероприятия', author: 'Мария', occupiedSeats: 3, totalSeats: 8 },
-    { title: 'Мероприятие 3', description: 'Описание третьего мероприятия', author: 'Петр', occupiedSeats: 7, totalSeats: 7 },
-  ];
-
-
+  ngOnInit() {
+    this.requestService.getInfo(this.url).subscribe(
+      (response) => {
+        this.events = response.content;
+        console.log(this.events);
+      },
+      (error) => {
+        console.error('Ошибка при загрузке данных', error);
+        this.events = [];
+      }
+    );
+  }
 
   register(event: any) {
 

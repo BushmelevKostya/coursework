@@ -1,0 +1,11 @@
+<div class="upload-container">
+  <h2>Выберите свое изображение профиля</h2>
+  <div class="upload-field">
+    <input type="file" id="iconInput" (change)="onFileSelected($event)" />
+    <label for="iconInput">Нажмите, чтобы выбрать файл</label>
+  </div>
+  <div class="button-group">
+    <button class="skip-btn" (click)="skip()">Пропустить</button>
+    <button class="save-btn" [disabled]="!selectedImage" (click)="save()">Сохранить</button>
+  </div>
+</div>

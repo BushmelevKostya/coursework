@@ -1,50 +1,47 @@
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {NgForm} from "@angular/forms";
 import {Injectable} from "@angular/core";
+import {Observable} from 'rxjs';
 
 @Injectable()
 export class RequestService {
-    constructor(private http: HttpClient) {
-    }
+  constructor(private http: HttpClient) {
+  }
 
-  url = 'http://localhost:8080/api/v1';
+  url = 'http://localhost:8080/';
 
-  createGameEvent(form: NgForm) {
-        let token = localStorage.getItem('token');
-        const headers = new HttpHeaders({
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-        });
+  postInfo(data: any, url: string):Observable<any> {
+    let token = localStorage.getItem('token');
 
-        console.log(headers);
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    });
 
-        this.http.post(this.url + "/events/create", form.value, { headers }).subscribe(
-            response => {
-                console.log(response);
-                console.log("Event was created!");
-            },
-            error => {
-                console.error("Error creating event", error);
-            }
-        );
-    }
+    return this.http.post(this.url + url, data, {headers});
+  }
 
-    test() {
-      // let token = localStorage.getItem('token');
-      // token = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJlT05BVHY3eVN3MExVODdweU15bVBEVi0tUXNzdlNpT1NBNExnR2ZQTFlvIn0.eyJleHAiOjE3MzY1OTE5NzIsImlhdCI6MTczNjU5MTY3MiwiYXV0aF90aW1lIjoxNzM2NTg5OTk5LCJqdGkiOiJiN2MyYzNjZi0wMDA1LTQzMDEtYTc5ZS1lMzhjOTY5YjMyMDEiLCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo5NDQzL3JlYWxtcy9kZXZyZWFsbSIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiJkNTMyOWY0YS1iZjA0LTQwNWMtYjRkOS1kMDYxMDdiY2VmODUiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJwdWItZGV2Iiwibm9uY2UiOiJvNjJjZ25mMXdvIiwic2Vzc2lvbl9zdGF0ZSI6ImYxZTIxZTBiLWNjZDQtNDQzOC1hOTlhLWQ4OWVhNTczMzAzNSIsImFjciI6IjAiLCJhbGxvd2VkLW9yaWdpbnMiOlsiKiJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiZGVmYXVsdC1yb2xlcy1kZXZyZWFsbSIsIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iLCJVU0VSIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJvcGVuaWQgZW1haWwgcHJvZmlsZSIsInNpZCI6ImYxZTIxZTBiLWNjZDQtNDQzOC1hOTlhLWQ4OWVhNTczMzAzNSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwibmFtZSI6ItCa0L7QvdGB0YLQsNC90YLQuNC9IGtvcyIsInByZWZlcnJlZF91c2VybmFtZSI6ImtvcyIsImdpdmVuX25hbWUiOiLQmtC-0L3RgdGC0LDQvdGC0LjQvSIsImZhbWlseV9uYW1lIjoia29zIiwiZW1haWwiOiJrb3NAZ21haWwuY29tIn0.Na29z0KKnJpRJDSPk-rE3OXBrY1VrYaePWGjTL9axGPZcMEQMig1fE92yOpqQbrocDx5o0AtcCz5-oinZJ2qeIyr-AVmrco5m-fjKwyuQHiVRYFWZbSUYeBsEGeCJ6tcga7Jx7iir7PMB63SUQXxPJauiKNECtn1VyVYmuIN6p74MoNG9F4l6507GoJf4YgKCS2Qtb4SxDYwo4q_OoCKLHRxp0KaBh83N93ijcQ0aDKRNDC9i4KBu8SgTxkVUaa9L7bAhyGbVb_vzrYpkpn2Az6g4pltjJT8XaAypcyGyWpNmJGLuPoJccCV5o9QdIX1DDY9bN_8Ig0mYxxa-hqcsA"
-      // const headers = new HttpHeaders({
-      //   Authorization: `Bearer ${token}`,
-      //   // 'Content-Type': 'application/json',
-      // });
-      //
-      // this.http.get(this.url + "/test", {headers}).subscribe(
-      this.http.get(this.url + "/test", {
-        headers: new HttpHeaders({
-          Authorization: `Bearer ${localStorage.getItem('token')}`
-        })
-      }).subscribe(
-        response => console.log(response),
-        error => console.error('Error:', error)
-      );
-    }
+  getInfo(url: string):Observable<any> {
+    let token = localStorage.getItem('token');
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    });
+
+    return this.http.get<{ content: any[] }>(this.url + url, {headers});
+  }
+
+  test() {
+    let token = localStorage.getItem('token');
+    // let token = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJlT05BVHY3eVN3MExVODdweU15bVBEVi0tUXNzdlNpT1NBNExnR2ZQTFlvIn0.eyJleHAiOjE3MzY2MTA2NzksImlhdCI6MTczNjYxMDM3OSwiYXV0aF90aW1lIjoxNzM2NjEwMzc5LCJqdGkiOiJiYjRlYzY1ZS00YzU1LTRhMGQtOTE1Yy02YjlkYTIwOTQ4ZmQiLCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo5NDQzL3JlYWxtcy9kZXZyZWFsbSIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiJkNjYzNmQ1Zi0xMjljLTQ2YjEtYTE1Yy01YjkxMzkyMzJjYjciLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJwdWItZGV2Iiwibm9uY2UiOiJwMHAzYmcyYzUxIiwic2Vzc2lvbl9zdGF0ZSI6ImQ2M2MwNTI2LWVmYjUtNDExNy05YjhiLWEwMGY3NTQ5YTc4MyIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiKiJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiZGVmYXVsdC1yb2xlcy1kZXZyZWFsbSIsIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iLCJVU0VSIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJvcGVuaWQgZW1haWwgcHJvZmlsZSIsInNpZCI6ImQ2M2MwNTI2LWVmYjUtNDExNy05YjhiLWEwMGY3NTQ5YTc4MyIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwibmFtZSI6ItCa0L7QvdGB0YLQsNC90YLQuNC9IGsiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJrIiwiZ2l2ZW5fbmFtZSI6ItCa0L7QvdGB0YLQsNC90YLQuNC9IiwiZmFtaWx5X25hbWUiOiJrIiwiZW1haWwiOiJrQGdtYWlsLmNvbSJ9.FOAXc5MdVTgGWmdIoO8KjONW3zZ7-5M505V7iHffAF_nI8w8zKSLFjKrVFrR-3DBynoEKUXee0nXvZT60gUk-_ndSSw3vT_xedm_3GyL-YOTgMi89-22KUomuUW-KOIJj585CVYArkbkcINr8mOG0EG9PydMiARoz40lYAjQhdlE4mXfP0NSowmuD2BUQ3-D0GWydBa25aE0RXnYV69GTFyBNzCIGWfRkuDxC-wsjibwo4zo42Q5l6o1bCs-n0UddGPnHdpFSyaNXKm7b7p1YIJ5-Gg9a_7TtfeC_-iLDdHAtI1n0G8ZItRXfdHuUtYT3dbDWyFJeEDCKA9-eVXnpA";
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    });
+    this.http.get(this.url + "api/v1/gameevent", {headers}).subscribe(
+      response => console.log(response),
+      error => alert(error)
+    );
+  }
 }

@@ -9,7 +9,6 @@ export const keycloakConfig: KeycloakConfig = {
 export const keycloakInitOptions: KeycloakInitOptions = {
   onLoad: 'login-required',
   pkceMethod: 'S256',
-  redirectUri: 'http://localhost:4200',
-  silentCheckSsoRedirectUri: window.location.origin + '/assets/silent-check-sso.html',
+  redirectUri: 'http://localhost:4200/icon',
   checkLoginIframe: false,
 };

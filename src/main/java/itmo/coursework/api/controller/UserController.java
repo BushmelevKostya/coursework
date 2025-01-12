@@ -26,11 +26,15 @@ public class UserController {
     }
 
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ProfileResponseDTO findProfileById(@PathVariable Long id) {
         return profileService.getProfileById(id);
     }
-
+    
+    @GetMapping("/username/{username}")
+    public ProfileResponseDTO findProfileByUsername(@PathVariable String username) {
+        return profileService.getProfileByUsername(username);
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

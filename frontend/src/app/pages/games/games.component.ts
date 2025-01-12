@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import {NgForOf, NgOptimizedImage} from '@angular/common';
 import {NavbarComponent} from '../../shared/navbar/navbar.component';
+import {RequestService} from '../../service/request.service';
 
 interface Game {
   image: string;
@@ -18,27 +19,26 @@ interface Game {
     NgForOf,
     NavbarComponent
   ],
-  styleUrls: ['./games.component.css']
+  styleUrls: ['./games.component.css'],
+  providers: [RequestService]
 })
 export class GamesComponent {
-  games: Game[] = [
-    {
-      image: 'assets/images/g1.jpg',
-      name: 'Эверделл',
-      players: '1-4',
-      genre: 'Евро',
-    },
-    {
-      image: 'assets/images/g2.jpg',
-      name: 'Дюна',
-      players: '2-5',
-      genre: 'Worker placement'
-    },
-    {
-      image: 'assets/images/g3.jpg',
-      name: 'Остров духов',
-      players: '1-4',
-      genre: 'Стратегия'
-    }
-  ];
+  games: any[] = [];
+  url = 'api/v1/game';
+  constructor(private requestService: RequestService) {
+
+  }
+
+  ngOnInit() {
+    this.requestService.getInfo(this.url).subscribe(
+      (response) => {
+        this.games = response.content;
+        console.log(this.games);
+      },
+      (error) => {
+        console.error('Ошибка при загрузке данных', error);
+        this.games = [];
+      }
+    );
+  }
 }

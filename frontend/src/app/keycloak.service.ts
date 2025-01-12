@@ -17,6 +17,7 @@ export class AppKeycloakService {
       loadUserProfileAtStartUp: true,
     }).then(() => {
       return this.keycloakService.getToken().then(token => {
+        localStorage.setItem('username', this.keycloakService.getUsername());
         localStorage.setItem('token', token!);
         this.startTokenRefresh();
         return true;
@@ -43,7 +44,7 @@ export class AppKeycloakService {
         if (refreshed) {
           this.keycloakService.getToken().then(token => {
             localStorage.setItem('token', token!);
-            console.log('Token refreshed and saved to localStorage:', token);
+            // console.log('Token refreshed and saved to localStorage:', token);
           });
         }
       }).catch(err => {
