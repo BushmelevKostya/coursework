@@ -1,0 +1,15 @@
+<app-navbar></app-navbar>
+<div class="profile-container">
+  <div class="profile-header">
+    <h2>Твои запланированные мероприятия</h2>
+  </div>
+  <div class="profile-details">
+    <h3>Мероприятия</h3>
+    <ul class="profile-events">
+      <li *ngFor="let event of userEvents">
+        <strong>{{ event.name }}</strong> - {{ event.date | date: 'mediumDate' }}
+        <p>{{ event.description }}</p>
+      </li>
+    </ul>
+  </div>
+</div>
