@@ -35,6 +35,18 @@ export class EventListComponent implements OnInit{
   }
 
   register(event: any) {
-
+    const data = {
+      eventId: event.id,
+      profileId: localStorage.getItem("profileId")
+    }
+    this.requestService.postInfo(data, 'api/v1/gameeventprofiles').subscribe(
+      (response) => {
+        alert("Вы успешно зарегистрированы на событие!")
+      },
+      (error) => {
+        console.error('Ошибка при загрузке данных', error);
+        this.events = [];
+      }
+    );
   }
 }
