@@ -1,25 +1,23 @@
 <app-navbar></app-navbar>
 <div class="profile-container">
   <div class="profile-header">
-    <img class="profile-picture" src="assets/images/p1.jpg" alt="User Picture">
-    <h2>LordPackman</h2>
+    <img class="profile-picture" [src]="profile?.icon" alt="{{ profile?.name }}">
+    <h2>{{ profile?.name }}</h2>
   </div>
   <div class="profile-details">
     <h3>История мероприятий</h3>
     <ul class="profile-events">
-      <li>Мероприятие 1 - Участвовал</li>
-      <li>Мероприятие 2 - Организатор</li>
-      <li>Мероприятие 3 - Посетил</li>
+      <li *ngFor="let event of gameHistory">
+        {{ event.eventName }} - {{ event.gameResult }}
+      </li>
     </ul>
     <h3>Статистика</h3>
-    <p>Сыграно игр: 10</p>
-    <p>Побед: 7</p>
-    <p>Процент побед: 70%</p>
+    <p>Сыграно игр: {{ statistics?.totalGames }}</p>
+    <p>Побед: {{ statistics?.wins }}</p>
+    <p>Процент побед: {{ statistics?.winPercentage }}%</p>
     <h3>Избранные игры</h3>
     <ul class="profile-favorites">
-      <li>Игра 1</li>
-      <li>Игра 2</li>
-      <li>Игра 3</li>
+      <li *ngFor="let game of favouriteGames">{{ game.name }}</li>
     </ul>
   </div>
 </div>
