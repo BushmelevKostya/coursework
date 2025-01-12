@@ -1,0 +1,12 @@
+<div class="event-list" *ngIf="events.length > 0; else noEvents">
+  <div *ngFor="let event of events" class="event-card">
+    <h2>{{ event.name }}</h2>
+    <p>{{ event.description }}</p>
+    <p><strong>Места:</strong> {{ event.currentMembers }} / {{ event.maxMembers }}</p>
+    <button class="register-btn" (click)="register(event)">Записаться</button>
+  </div>
+</div>
+
+<ng-template #noEvents>
+  <p>Рекомендаций пока нет.</p>
+</ng-template>
