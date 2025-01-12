@@ -3,6 +3,9 @@ import {EventListComponent} from '../../features/event-list/event-list.component
 import {NavbarComponent} from '../../shared/navbar/navbar.component';
 import {RouterOutlet} from '@angular/router';
 import {RequestService} from '../../service/request.service';
+import {NgIf} from '@angular/common';
+import {KudagoEventListComponent} from '../../features/kudago-event-list/kudago-event-list.component';
+import {RecommendedEventListComponent} from '../../features/recommended-event-list/recommended-event-list.component';
 
 @Component({
   selector: 'app-home',
@@ -10,7 +13,10 @@ import {RequestService} from '../../service/request.service';
   imports: [
     EventListComponent,
     NavbarComponent,
-    RouterOutlet
+    RouterOutlet,
+    NgIf,
+    KudagoEventListComponent,
+    RecommendedEventListComponent
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
@@ -19,7 +25,9 @@ import {RequestService} from '../../service/request.service';
 export class HomeComponent {
   constructor(private requestService:RequestService) {
   }
-  test() {
-    this.requestService.test();
+  activeTab: string = 'game';
+
+  changeTab(tab: string): void {
+    this.activeTab = tab;
   }
 }

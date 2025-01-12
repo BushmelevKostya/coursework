@@ -28,7 +28,6 @@ export class EventListComponent implements OnInit{
         this.events = response.content;
       },
       (error) => {
-        console.error('Ошибка при загрузке данных', error);
         this.events = [];
       }
     );
@@ -44,8 +43,6 @@ export class EventListComponent implements OnInit{
         alert("Вы успешно зарегистрированы на событие!")
       },
       (error) => {
-        console.error('Ошибка при загрузке данных', error);
-        this.events = [];
       }
     );
   }
