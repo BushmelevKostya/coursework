@@ -59,10 +59,15 @@ public GameEventProfilesResponseDTO createGameEventProfile(GameEventProfilesMuta
         throw new GameEventProfilesException("Данный профиль уже существует для этого события");
     }
     
+    GameEvent gameEvent = gameEventRepository.findById(gameEventProfilesMutationDTO.eventId())
+        .orElseThrow(() -> new GameEventExistenceException("GameEvent не существует"));
+    if (gameEventProfilesRepository.countByGameEvent(gameEvent) + 2 > gameEvent.getMaxMembers()) {
+        throw new GameEventProfilesException("Нет мест");
+    }
     GameEventProfiles gameEventProfiles = gameEventProfilesRepository.insertGameEventProfile(profileId, gameEventProfilesMutationDTO.eventId());
     
-    GameEvent gameEvent = gameEventRepository.findById(gameEventProfiles.getGameEvent().getId())
-            .orElseThrow(() -> new GameEventExistenceException("GameEvent не существует"));
+//    gameEvent = gameEventRepository.findById(gameEventProfiles.getGameEvent().getId())
+//            .orElseThrow(() -> new GameEventExistenceException("GameEvent не существует"));
     gameEvent.setCurrentMembers(gameEventProfilesRepository.countByGameEvent(gameEvent) + 1);
     gameEventRepository.save(gameEvent);
     
