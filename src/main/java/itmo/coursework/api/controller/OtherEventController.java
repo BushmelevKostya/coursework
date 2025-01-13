@@ -2,6 +2,7 @@ package itmo.coursework.api.controller;
 
 import itmo.coursework.dto.OtherEventMutationDTO;
 import itmo.coursework.dto.OtherEventResponseDTO;
+import itmo.coursework.exceptions.entity.impl.OtherEventExistenceException;
 import itmo.coursework.model.entity.OtherEvent;
 import itmo.coursework.services.OtherEventService;
 import org.springframework.data.domain.Page;
@@ -49,6 +50,13 @@ public class OtherEventController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteOtherEvent(@PathVariable Long id) {
         otherEventService.deleteOtherEvent(id);
+        return ResponseEntity.ok().build();
+    }
+
+
+    @DeleteMapping("/deleterecursively/{id}")
+    public ResponseEntity<Void> deleteOtherEventWithDependencies(@PathVariable Long id) {
+        otherEventService.deleteOtherEventWithDependencies(id);
         return ResponseEntity.ok().build();
     }
 }

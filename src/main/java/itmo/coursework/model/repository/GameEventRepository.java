@@ -39,6 +39,8 @@ public interface GameEventRepository extends JpaRepository<GameEvent, Long> {
             @Param("date") ZonedDateTime date,
             @Param("locationId") Long locationId
     );
+    @Query(value = "select * from delete_game_event_recursively(:eventId)", nativeQuery = true)
+    void deleteGameEventRecursively(@Param("eventId") Long eventId);
     @Query("SELECT ge FROM GameEvent ge " +
             "LEFT JOIN ge.location location " +
             "LEFT JOIN ge.status status " +

@@ -2,14 +2,19 @@ package itmo.coursework.services;
 
 import itmo.coursework.dto.GameMutationDTO;
 import itmo.coursework.dto.GameResponseDTO;
+import itmo.coursework.dto.GameWithGenresResponseDTO;
 import itmo.coursework.exceptions.entity.impl.GameExistenceException;
 import itmo.coursework.model.entity.Game;
+import itmo.coursework.model.entity.Genre;
 import itmo.coursework.model.repository.GameRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class GameService {
@@ -23,6 +28,10 @@ public class GameService {
 
     public Page<GameResponseDTO> getAllGames(Pageable pageable) {
         return gameRepository.findAll(pageable).map(this::getDTOFromGame);
+    }
+
+    public Page<GameWithGenresResponseDTO> getAllGamesWithGenres(Pageable pageable) {
+        return gameRepository.findAll(pageable).map(this::getDTOFromGameWithGenre);
     }
 
 
@@ -66,6 +75,16 @@ public class GameService {
         gameRepository.deleteById(id);
     }
 
+    public List<String> getGenresForGame(Long gameId) {
+        Game game = gameRepository.findById(gameId).orElseThrow(
+                () -> new GameExistenceException("Такой игры нет")
+        );
+
+        return game.getGameGenres().stream()
+                .map(gameGenre -> gameGenre.getGenre().getName())
+                .collect(Collectors.toList());
+    }
+
     protected GameResponseDTO getDTOFromGame(Game game) {
         return new GameResponseDTO(
                 game.getId(),
@@ -83,5 +102,22 @@ public class GameService {
         game.setMinPlayers(gameMutationDTO.minPlayers());
         game.setMaxPlayers(gameMutationDTO.maxPlayers());
         return game;
+    }
+
+    private GameWithGenresResponseDTO getDTOFromGameWithGenre(Game game) {
+        List<String> genreNames = game.getGameGenres().stream()
+                .map(gameGenre -> gameGenre.getGenre().getName())  // Извлекаем имя жанра
+                .collect(Collectors.toList());
+
+        String genres = String.join(", ", genreNames);
+
+        return new GameWithGenresResponseDTO(
+                game.getId(),
+                game.getName(),
+                game.getDescription(),
+                game.getMinPlayers(),
+                game.getMaxPlayers(),
+                genres
+        );
     }
 }

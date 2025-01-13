@@ -13,4 +13,6 @@ public interface OtherEventRepository extends JpaRepository<OtherEvent, Long> {
                                 @Param("description") String description,
                                 @Param("date") String date,
                                 @Param("locationId") Long locationId);
+    @Query(value = "SELECT delete_other_event_recursively(:eventId)", nativeQuery = true)
+    void deleteOtherEventRecursively(@Param("eventId") Long eventId);
 }

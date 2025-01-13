@@ -5,10 +5,14 @@ import itmo.coursework.exceptions.entity.impl.*;
 import itmo.coursework.model.entity.*;
 import itmo.coursework.model.repository.*;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -150,7 +154,7 @@ public class GameEventService {
 //    }
 
 
-    public String deleteGameEvent(Long id, GameEventMutationDTO gameEventMutationDTO) {
+    public String deleteGameEvent(Long id) {
         GameEvent gameEvent = gameEventRepository.findById(id)
                 .orElseThrow(() -> new GameEventExistenceException(
                         "GameEvent с id="
@@ -159,6 +163,16 @@ public class GameEventService {
                 ));
         schedulerService.deleteGameEvent(gameEvent);
         return "успешно удалено";
+    }
+
+
+    @Transactional
+    public void deleteGameEventWithDependencies(Long eventId) {
+        if (!gameEventRepository.existsById(eventId)) {
+            throw new GameEventExistenceException("Game event с id " + eventId + " не существует");
+        }
+
+        gameEventRepository.deleteGameEventRecursively(eventId);
     }
 
 
@@ -201,7 +215,7 @@ public class GameEventService {
         return recommendedEvents.stream()
                 .map(this::getDTOFromGameEvent)
                 .collect(Collectors.toList());
-}
+    }
 
     public GameEventResponseDTO getDTOFromGameEvent(GameEvent gameEvent) {
         if (gameEvent.getGame() == null) {
@@ -247,18 +261,6 @@ public class GameEventService {
                         "Profile огранизатора"
                                 + " не существует"
                 ));
-//        Profile organiser = profileRepository.findById(gameEventMutationDTO.organizerId())
-//                .orElseThrow(() -> new ProfileExistenceException(
-//                        "Profile огранизатора с id="
-//                        + gameEventMutationDTO.organizerId()
-//                        + " не существует"
-//                ));
-//        Profile winner = profileRepository.findById(gameEventMutationDTO.winnerId())
-//                .orElseThrow(() -> new ProfileExistenceException(
-//                        "Profile победителя с id="
-//                                + gameEventMutationDTO.winnerId()
-//                                + " не существует"
-//                ));
         Location location = locationRepository.findById(gameEventMutationDTO.locationId())
                 .orElseThrow(() -> new LocationExistenceException(
                         "Location с id="

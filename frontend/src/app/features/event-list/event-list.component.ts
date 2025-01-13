@@ -23,7 +23,7 @@ export class EventListComponent implements OnInit{
     name: '',
     description: '',
     gameName: '',
-    locationName: '',
+    address: '',
     statusName: '',
     minMembers: null,
     maxMembers: null

@@ -2,12 +2,16 @@ package itmo.coursework.api.controller;
 
 import itmo.coursework.dto.GameMutationDTO;
 import itmo.coursework.dto.GameResponseDTO;
+import itmo.coursework.dto.GameWithGenresResponseDTO;
+import itmo.coursework.model.entity.Genre;
 import itmo.coursework.services.GameService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/game")
@@ -25,6 +29,10 @@ public class GameController {
         return gameService.getAllGames(pageable);
     }
 
+    @GetMapping("/genres")
+    public Page<GameWithGenresResponseDTO> findAllGenres(Pageable pageable) {
+        return gameService.getAllGamesWithGenres(pageable);
+    }
 
     @GetMapping("/{id}")
     public GameResponseDTO findGameById(@PathVariable Long id) {
@@ -49,5 +57,10 @@ public class GameController {
     public ResponseEntity<Void> deleteGame(@PathVariable Long id) {
         gameService.deleteGame(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{gameId}/genres")
+    public List<String> getGenresForGame(@PathVariable Long gameId) {
+        return gameService.getGenresForGame(gameId);
     }
 }

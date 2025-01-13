@@ -9,7 +9,7 @@ interface Game {
   name: string;
   minPlayers: number;
   maxPlayers: number;
-  genre: string;
+  genres: string;
   isFavorite?: boolean;
 }
 
@@ -27,7 +27,7 @@ interface Game {
 })
 export class GamesComponent implements OnInit{
   games: Game[] = [];
-  url = 'api/v1/game';
+  url = 'api/v1/game/genres';
   constructor(private requestService: RequestService) {
 
   }
