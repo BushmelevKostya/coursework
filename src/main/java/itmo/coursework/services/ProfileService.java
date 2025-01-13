@@ -37,9 +37,8 @@ public class ProfileService {
 
 
     public ProfileResponseDTO createProfile(ProfileMutationDTO profileMutationDTO) {
-        Profile profile = getProfileFromDTO(profileMutationDTO);
-        profile.setName(securityService.findUserName());
-        profile = profileRepository.save(profile);
+        String userName = securityService.findUserName();
+        Profile profile = profileRepository.insertProfile(userName, profileMutationDTO.icon());
         return getDTOFromProfile(profile);
     }
 

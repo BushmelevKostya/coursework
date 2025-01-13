@@ -48,10 +48,13 @@ public class OtherEventService {
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     public OtherEventResponseDTO createOtherEvent(OtherEventMutationDTO otherEventMutationDTO) {
-        OtherEvent otherEvent = getOtherEventFromDTO(otherEventMutationDTO);
-        otherEvent = otherEventRepository.save(otherEvent);
-
-        return getDTOFromOtherEvent(otherEvent);
+        OtherEvent createdEvent = otherEventRepository.insertOtherEvent(
+                otherEventMutationDTO.name(),
+                otherEventMutationDTO.description(),
+                otherEventMutationDTO.date().toString(),
+                otherEventMutationDTO.locationId()
+        );
+        return getDTOFromOtherEvent(createdEvent);
     }
 
 

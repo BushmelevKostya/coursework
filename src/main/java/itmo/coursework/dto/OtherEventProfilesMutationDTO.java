@@ -1,4 +1,4 @@
 package itmo.coursework.dto;
 
-public record OtherEventProfilesMutationDTO(Long profileId, Long eventId) {
+public record OtherEventProfilesMutationDTO(Long eventId) {
 }

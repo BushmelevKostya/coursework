@@ -27,13 +27,15 @@ public class OtherEventProfilesService {
     private final ProfileService profileService;
     private final OtherEventRepository otherEventRepository;
     private final ProfileRepository profileRepository;
+    private final SecurityService securityService;
 
-    public OtherEventProfilesService(OtherEventProfilesRepository otherEventProfilesRepository, OtherEventService otherEventService, ProfileService profileService, OtherEventRepository otherEventRepository, ProfileRepository profileRepository) {
+    public OtherEventProfilesService(OtherEventProfilesRepository otherEventProfilesRepository, OtherEventService otherEventService, ProfileService profileService, OtherEventRepository otherEventRepository, ProfileRepository profileRepository, SecurityService securityService) {
         this.otherEventProfilesRepository = otherEventProfilesRepository;
         this.otherEventService = otherEventService;
         this.profileService = profileService;
         this.otherEventRepository = otherEventRepository;
         this.profileRepository = profileRepository;
+        this.securityService = securityService;
     }
 
 
@@ -53,7 +55,6 @@ public class OtherEventProfilesService {
     public OtherEventProfilesResponseDTO createOtherEventProfile(OtherEventProfilesMutationDTO otherEventProfilesMutationDTO) {
         OtherEventProfiles otherEventProfiles = getOtherEventProfilesFromDTO(otherEventProfilesMutationDTO);
         otherEventProfilesRepository.save(otherEventProfiles);
-
         return getDTOFromOtherEventProfiles(otherEventProfiles);
     }
 
@@ -68,11 +69,9 @@ public class OtherEventProfilesService {
                         "OtherEvent с id="
                         + otherEventProfilesMutationDTO.eventId()
                         + " не существует"));
-        Profile profile = profileRepository.findById(otherEventProfilesMutationDTO.profileId())
+        Profile profile = profileRepository.findByName(securityService.findUserName())
                 .orElseThrow(() -> new ProfileExistenceException(
-                        "Profile с id="
-                        + otherEventProfilesMutationDTO.profileId()
-                        + " не сущетсвует"));
+                        "Profile не существует"));
         otherEventProfiles.setOtherEvent(otherEvent);
         otherEventProfiles.setProfile(profile);
 
@@ -114,11 +113,9 @@ public class OtherEventProfilesService {
                         + otherEventProfilesMutationDTO.eventId()
                         + " не существует"
                 ));
-        Profile profile = profileRepository.findById(otherEventProfilesMutationDTO.profileId())
+        Profile profile = profileRepository.findByName(securityService.findUserName())
                 .orElseThrow(() -> new ProfileExistenceException(
-                        "Profile с id="
-                        + otherEventProfilesMutationDTO.profileId()
-                        + " не существует"
+                        "Profile не существует"
                 ));
         otherEventProfiles.setOtherEvent(otherEvent);
         otherEventProfiles.setProfile(profile);

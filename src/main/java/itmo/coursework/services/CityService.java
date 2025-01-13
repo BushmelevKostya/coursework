@@ -35,13 +35,18 @@ public class CityService {
     }
 
 
+//    @Transactional
+//    @PreAuthorize("hasRole('ADMIN')")
+//    public CityResponseDTO createCity(CityMutationDTO cityMutationDTO) {
+//        City city = cityRepository.save(getCityFromDTO(cityMutationDTO));
+//        return getDTOFromCity(city);
+//    }
+
     @Transactional
-    @PreAuthorize("hasRole('ADMIN')")
     public CityResponseDTO createCity(CityMutationDTO cityMutationDTO) {
-        City city = cityRepository.save(getCityFromDTO(cityMutationDTO));
+        City city = cityRepository.insertCity(cityMutationDTO.name());
         return getDTOFromCity(city);
     }
-
 
 
     @Transactional

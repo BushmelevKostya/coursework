@@ -56,9 +56,11 @@ public class GameGenreService {
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     public GameGenreResponseDTO createGameGenre(GameGenreMutationDTO gameGenreMutationDTO) {
-        GameGenre gameGenre = getGameGenreFromDTO(gameGenreMutationDTO);
-        gameGenre = gameGenreRepository.save(gameGenre);
+        if (gameGenreRepository.existsByGameIdAndGenreId(gameGenreMutationDTO.gameId(), gameGenreMutationDTO.genreId())) {
+            throw new GameGenreExistenceException("Связь между игрой и жанром уже существует.");
+        }
 
+        GameGenre gameGenre = gameGenreRepository.save(getGameGenreFromDTO(gameGenreMutationDTO));
         return getDTOFromGameGenre(gameGenre);
     }
 

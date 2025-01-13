@@ -35,7 +35,10 @@ public class EventStatusService {
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     public EventStatusResponseDTO createEventStatus(EventStatusMutationDTO eventStatusMutationDTO) {
-        EventStatus eventStatus = eventStatusRepository.save(getEventStatusFromDTO(eventStatusMutationDTO));
+        if (eventStatusRepository.findByStatus(eventStatusMutationDTO.status()).isPresent()) {
+            throw new EventStatusExistenceException("Статус события с таким названием уже существует.");
+        }
+        EventStatus eventStatus = eventStatusRepository.insertEventStatus(eventStatusMutationDTO.status());
         return getDTOFromEventStatus(eventStatus);
     }
 

@@ -15,6 +15,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.ZonedDateTime;
+
 @Service
 public class GameHistoryService {
 
@@ -46,9 +48,13 @@ public class GameHistoryService {
 
     @Transactional
     public GameHistoryResponseDTO createGameHistory(GameHistoryMutationDTO gameHistoryMutationDTO) {
-        GameHistory gameHistory = getGameHistoryFromDTO(gameHistoryMutationDTO);
-        gameHistory = gameHistoryRepository.save(gameHistory);
-
+//        GameHistory gameHistory = getGameHistoryFromDTO(gameHistoryMutationDTO);
+//        gameHistory = gameHistoryRepository.save(gameHistory);
+        GameHistory gameHistory = gameHistoryRepository.insertGameHistory(
+                gameHistoryMutationDTO.eventName(),
+                gameHistoryMutationDTO.dateEvent(),
+                gameHistoryMutationDTO.gameResult(),
+                gameHistoryMutationDTO.profileId());
         return getDTOFromGameHistory(gameHistory);
     }
 

@@ -25,13 +25,15 @@ public class GameEventProfilesService {
     private final ProfileService profileService;
     private final GameEventRepository gameEventRepository;
     private final ProfileRepository profileRepository;
+    private final SecurityService securityService;
 
-    public GameEventProfilesService(GameEventProfilesRepository gameEventProfilesRepository, GameEventService gameEventService, ProfileService profileService, GameEventRepository gameEventRepository, ProfileRepository profileRepository) {
+    public GameEventProfilesService(GameEventProfilesRepository gameEventProfilesRepository, GameEventService gameEventService, ProfileService profileService, GameEventRepository gameEventRepository, ProfileRepository profileRepository, SecurityService securityService) {
         this.gameEventProfilesRepository = gameEventProfilesRepository;
         this.gameEventService = gameEventService;
         this.profileService = profileService;
         this.gameEventRepository = gameEventRepository;
         this.profileRepository = profileRepository;
+        this.securityService = securityService;
     }
 
 
@@ -45,11 +47,13 @@ public class GameEventProfilesService {
                 .orElseThrow(() -> new GameEventProfilesException("GameEventProfiles с id=" + id + " не существует"));
     }
 
-
+//TODO: автовстраиваемый profile id
     @Transactional
     public GameEventProfilesResponseDTO createGameEventProfile(GameEventProfilesMutationDTO gameEventProfilesMutationDTO) {
-        GameEventProfiles gameEventProfiles = getGameEventProfilesFromDTO(gameEventProfilesMutationDTO);
-        gameEventProfiles = gameEventProfilesRepository.save(gameEventProfiles);
+        Long profileId = profileRepository.findByName(securityService.findUserName()).orElseThrow(
+                () -> new ProfileExistenceException("Такого профиля не существует")
+        ).getId();
+        GameEventProfiles gameEventProfiles = gameEventProfilesRepository.insertGameEventProfile(profileId, gameEventProfilesMutationDTO.eventId());
         GameEvent gameEvent = gameEventRepository.findById(gameEventProfiles.getGameEvent().getId())
                 .orElseThrow(() -> new GameEventExistenceException("GameEvent не существует"));
         gameEvent.setCurrentMembers(gameEventProfilesRepository.countByGameEvent(gameEvent)+1);
@@ -67,9 +71,9 @@ public class GameEventProfilesService {
         gameEventRepository.save(oldEvent);
         GameEvent gameEvent = gameEventRepository.findById(gameEventProfilesMutationDTO.eventId())
                 .orElseThrow(() -> new GameEventExistenceException("GameEvent с id=" + gameEventProfilesMutationDTO.eventId() + " не существует"));
-        Profile profile = profileRepository.findById(gameEventProfilesMutationDTO.profileId())
-                .orElseThrow(() -> new ProfileExistenceException("Profile с id=" + gameEventProfilesMutationDTO.profileId() + " не сущетсвует"));
-        gameEventProfiles.setProfile(profile);
+//        Profile profile = profileRepository.findById(gameEventProfilesMutationDTO.profileId())
+//                .orElseThrow(() -> new ProfileExistenceException("Profile с id=" + gameEventProfilesMutationDTO.profileId() + " не сущетсвует"));
+//        gameEventProfiles.setProfile(profile);
         gameEventProfiles.setGameEvent(gameEvent);
         gameEventProfiles = gameEventProfilesRepository.save(gameEventProfiles);
         gameEvent.setCurrentMembers(gameEventProfilesRepository.countByGameEvent(gameEvent));
@@ -101,8 +105,8 @@ public class GameEventProfilesService {
         GameEventProfiles gameEventProfiles = new GameEventProfiles();
         GameEvent gameEvent = gameEventRepository.findById(gameEventProfilesMutationDTO.eventId())
                 .orElseThrow(() -> new GameEventExistenceException("GameEvent c id=" + gameEventProfilesMutationDTO.eventId() + " не существует"));
-        Profile profile = profileRepository.findById(gameEventProfilesMutationDTO.profileId())
-                .orElseThrow(() -> new ProfileExistenceException("Profile с id=" + gameEventProfilesMutationDTO.profileId() + " не существует"));
+        Profile profile = profileRepository.findByName(securityService.findUserName())
+                .orElseThrow(() -> new ProfileExistenceException("Profile не существует"));
         gameEventProfiles.setGameEvent(gameEvent);
         gameEventProfiles.setProfile(profile);
 

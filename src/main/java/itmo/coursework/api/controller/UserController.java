@@ -31,9 +31,9 @@ public class UserController {
         return profileService.getProfileById(id);
     }
     
-    @GetMapping("/username/{username}")
-    public ProfileResponseDTO findProfileByUsername(@PathVariable String username) {
-        return profileService.getProfileByUsername(username);
+    @GetMapping("/username")
+    public ProfileResponseDTO findProfileByUsername() {
+        return profileService.getProfileByUsername();
     }
 
     @PostMapping

@@ -37,9 +37,11 @@ public class GenreService {
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     public GenreResponseDTO createGenre(GenreMutationDTO genreMutationDTO) {
-        Genre genre = getGenreFromDTO(genreMutationDTO);
-        genre = genreRepository.save(genre);
+        if (genreRepository.findByName(genreMutationDTO.name()).isPresent()) {
+            throw new GenreExistenceException("Жанр с таким названием уже существует");
+        }
 
+        Genre genre = genreRepository.insertGenre(genreMutationDTO.name());
         return getDTOFromGenre(genre);
     }
 

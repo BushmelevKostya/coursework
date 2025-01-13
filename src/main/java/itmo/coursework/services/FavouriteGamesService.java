@@ -4,7 +4,8 @@ import itmo.coursework.dto.FavouriteGamesMutationDTO;
 import itmo.coursework.dto.FavouriteGamesResponseDTO;
 import itmo.coursework.dto.GameResponseDTO;
 import itmo.coursework.dto.ProfileResponseDTO;
-import itmo.coursework.exceptions.entity.impl.FavouriteGamesException;
+import itmo.coursework.exceptions.entity.impl.FavouriteGamesExistenceException;
+import itmo.coursework.exceptions.entity.impl.GameEventExistenceException;
 import itmo.coursework.exceptions.entity.impl.GameExistenceException;
 import itmo.coursework.exceptions.entity.impl.ProfileExistenceException;
 import itmo.coursework.model.entity.FavouriteGames;
@@ -15,7 +16,6 @@ import itmo.coursework.model.repository.GameRepository;
 import itmo.coursework.model.repository.ProfileRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,23 +51,43 @@ public class FavouriteGamesService {
 
     public FavouriteGamesResponseDTO getFavouriteGamesById(Long id) {
         return favouriteGamesRepository.findById(id).map(this::getDTOFromFavouriteGames)
-                .orElseThrow(() -> new FavouriteGamesException("FavouriteGames с id=" + id + " не существует"));
+                .orElseThrow(() -> new FavouriteGamesExistenceException("FavouriteGames с id=" + id + " не существует"));
     }
 
 
+//    @Transactional
+//    public FavouriteGamesResponseDTO createFavouriteGames(FavouriteGamesMutationDTO favouriteGamesMutationDTO) {
+//        FavouriteGames favouriteGames = getFavouriteGamesFromDTO(favouriteGamesMutationDTO);
+//        favouriteGames = favouriteGamesRepository.save(favouriteGames);
+//
+//        return getDTOFromFavouriteGames(favouriteGames);
+//    }
+
     @Transactional
     public FavouriteGamesResponseDTO createFavouriteGames(FavouriteGamesMutationDTO favouriteGamesMutationDTO) {
-        FavouriteGames favouriteGames = getFavouriteGamesFromDTO(favouriteGamesMutationDTO);
-        favouriteGames = favouriteGamesRepository.save(favouriteGames);
+        Long profileId = favouriteGamesMutationDTO.profileId();
+        Long gameId = favouriteGamesMutationDTO.gameId();
+        Profile profile = profileRepository.findById(profileId)
+                .orElseThrow(() -> new ProfileExistenceException("Профиль с ID " + profileId + " не найден"));
 
-        return getDTOFromFavouriteGames(favouriteGames);
+        Game game = gameRepository.findById(gameId)
+                .orElseThrow(() -> new GameEventExistenceException("Игра с ID " + gameId + " не найдена"));
+
+        boolean exists = favouriteGamesRepository.existsByProfileIdAndGameId(profileId, gameId);
+        if (exists) {
+            throw new FavouriteGamesExistenceException("Игра уже добавлена в избранное для данного профиля");
+        }
+
+        FavouriteGames favouriteGame = favouriteGamesRepository.insertFavouriteGame(profileId, gameId);
+        return getDTOFromFavouriteGames(favouriteGame);
+
     }
 
 
     @Transactional
     public FavouriteGamesResponseDTO updateFavouriteGames(Long id, FavouriteGamesMutationDTO favouriteGamesMutationDTO) {
         FavouriteGames favouriteGames = favouriteGamesRepository.findById(id)
-                .orElseThrow(() -> new FavouriteGamesException("FavouriteGames с id=" + id + " не существует"));
+                .orElseThrow(() -> new FavouriteGamesExistenceException("FavouriteGames с id=" + id + " не существует"));
         Profile profile = profileRepository.findById(favouriteGamesMutationDTO.profileId())
                 .orElseThrow(() -> new ProfileExistenceException("Profile с id=" + favouriteGamesMutationDTO.profileId() + " не существует"));
         favouriteGames.setProfile(profile);
