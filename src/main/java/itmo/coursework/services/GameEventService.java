@@ -77,11 +77,29 @@ public class GameEventService {
 
     @Transactional
     public GameEventResponseDTO createGameEvent(GameEventMutationDTO gameEventMutationDTO) {
+        boolean exists = gameEventRepository.existsByNameAndDateAndLocation(gameEventMutationDTO.name(),
+                                                                            gameEventMutationDTO.date(),
+                                                                            gameEventMutationDTO.locationId());
+        if (exists) {
+            throw new RuntimeException("Событие с таким именем, датой и локацией уже существует.");
+        }
         GameEvent gameEvent = getGameEventFromDTO(gameEventMutationDTO);
         gameEvent.setCurrentMembers(1);
         // this.schedulerService.scheduleDeletion(gameEvent, Duration.between(LocalDateTime.now(), gameEvent.getDate()));
-        gameEvent = gameEventRepository.save(gameEvent);
-
+        Profile org= profileRepository.findByName(securityService.findUserName()).orElseThrow(
+                () -> new ProfileExistenceException("Профиля организатора нет")
+        );
+        gameEvent = gameEventRepository.insertGameEvent(gameEvent.getName(),
+                gameEvent.getDescription(),
+                gameEvent.getDate(),
+                gameEvent.getMinMembers(),
+                gameEvent.getCurrentMembers(),
+                gameEvent.getMaxMembers(),
+                gameEvent.getWinner().getId(),
+                org.getId(),
+                gameEvent.getLocation().getId(),
+                gameEvent.getStatus().getId(),
+                gameEvent.getGame().getId());
         return getDTOFromGameEvent(gameEvent);
     }
 
