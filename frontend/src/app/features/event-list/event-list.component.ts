@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {NgForOf, NgIf} from '@angular/common';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {RequestService} from '../../service/request.service';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-event-list',
@@ -10,13 +11,23 @@ import {RequestService} from '../../service/request.service';
   imports: [
     NgForOf,
     HttpClientModule,
-    NgIf
+    NgIf,
+    FormsModule
   ],
   styleUrls: ['./event-list.component.css'],
   providers: [RequestService]
 })
 export class EventListComponent implements OnInit{
   events: any[] = [];
+  filters: any = {
+    name: '',
+    description: '',
+    gameName: '',
+    locationName: '',
+    statusName: '',
+    minMembers: null,
+    maxMembers: null
+  };
   url = 'api/v1/gameevent';
   constructor(private requestService: RequestService) {
 
@@ -32,6 +43,27 @@ export class EventListComponent implements OnInit{
       }
     );
   }
+
+  filterEvents() {
+    const queryParams = new URLSearchParams()
+    Object.keys(this.filters).forEach((key) => {
+      if (this.filters[key] !== null && this.filters[key] !== '') {
+        queryParams.append(key, this.filters[key].toString());
+      }
+    });
+
+    const filterUrl = `${this.url}/filter?${queryParams.toString()}`;
+
+    this.requestService.getInfo(filterUrl).subscribe(
+      (response) => {
+        this.events = response.content;
+      },
+      () => {
+        this.events = [];
+      }
+    );
+  }
+
 
   register(event: any) {
     const data = {
