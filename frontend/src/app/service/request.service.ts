@@ -11,7 +11,7 @@ export class RequestService {
 
   postInfo(data: any, url: string):Observable<any> {
     let token = localStorage.getItem('token');
-
+    console.log(1213)
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',

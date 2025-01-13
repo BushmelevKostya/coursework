@@ -3,7 +3,8 @@ import {FormsModule, NgForm} from '@angular/forms';
 import {NavbarComponent} from '../../shared/navbar/navbar.component';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {RequestService} from '../../service/request.service';
-import {ZonedDateTime, LocalDateTime, ZoneId, DateTimeFormatter} from '@js-joda/core';
+import {ZonedDateTime, LocalDateTime, ZoneId, DateTimeFormatter, OffsetDateTime} from '@js-joda/core';
+import {response} from 'express';
 
 @Component({
   selector: 'app-event-form',
@@ -27,20 +28,22 @@ export class EventFormComponent {
     date: '2024-11-11T11:11:00+03:00',
     minMembers: 1,
     maxMembers: 1,
-    organiserId: 1,
     locationId: 1,
     statusId: 1,
-    game: 1
+    gameId: 1
   };
 
   onSubmit(form: NgForm) {
-    // form.value.date = this.convertToZonedDateTime(form.value.date, 'Europe/Moscow')
-    this.requestService.postInfo(form.value, "api/v1/gameevent");
+    form.value.date = this.convertToZonedDateTime(form.value.date, 'Europe/Moscow')
+    this.requestService.postInfo(form.value, "api/v1/gameevent").subscribe(
+      (response) => alert("Мероприятие успешно создано!")
+    );
   }
 
   private convertToZonedDateTime(localDateTime: string, timeZone: string): string {
-    const parsedLocalDateTime = LocalDateTime.parse(localDateTime);
-    const zonedDateTime = parsedLocalDateTime.atZone(ZoneId.SYSTEM);
+    const parsedOffsetDateTime = OffsetDateTime.parse(localDateTime);
+    const zonedDateTime = parsedOffsetDateTime.atZoneSameInstant(ZoneId.SYSTEM);
     return zonedDateTime.format(DateTimeFormatter.ISO_ZONED_DATE_TIME).replace("[SYSTEM]", "");
   }
+
 }

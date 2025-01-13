@@ -44,12 +44,4 @@ export class ManagementComponent {
       }
     );
   }
-
-  deleteAll(endpoint: string): void {
-    if (confirm(`Вы уверены, что хотите удалить все ${endpoint}?`))
-      this.requestService.deleteInfo(this.data, `api/v1/${endpoint}/delete-all`).subscribe(
-        () => alert(`Все ${endpoint} удалены успешно`),
-        (error) => console.error('Ошибка при удалении:', error)
-      );
-  }
 }
