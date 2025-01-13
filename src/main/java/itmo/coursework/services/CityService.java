@@ -49,8 +49,6 @@ public class CityService {
     }
 
 
-
-
     @Transactional
     public CityResponseDTO updateCity(Long id, CityMutationDTO cityMutationDTO) {
         if (securityService.hasAdminRole()){
