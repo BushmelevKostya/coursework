@@ -16,6 +16,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 public class DistrictService {
 
@@ -45,12 +47,27 @@ public class DistrictService {
     }
 
 
+//    @PreAuthorize("hasRole('ADMIN')")
+//    @Transactional
+//    public DistrictResponseDTO createDistrict(DistrictMutationDTO districtMutationDTO) {
+//        District district = getDistrictFromDTO(districtMutationDTO);
+//        district = districtRepository.save(district);
+//
+//        return getDTOFromDistrict(district);
+//    }
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public DistrictResponseDTO createDistrict(DistrictMutationDTO districtMutationDTO) {
-        District district = getDistrictFromDTO(districtMutationDTO);
-        district = districtRepository.save(district);
 
+        Optional<City> exCity = cityRepository
+                .findById(districtMutationDTO.cityId());
+
+        if (exCity.isEmpty()) {
+            throw new CityExistenceException("City не существует");
+        }
+
+
+        District district = districtRepository.insertDistrict(districtMutationDTO.name(), districtMutationDTO.cityId());
         return getDTOFromDistrict(district);
     }
 
