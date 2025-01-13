@@ -12,4 +12,5 @@ public interface GameEventProfilesRepository extends JpaRepository<GameEventProf
     long countByGameEvent(GameEvent gameEvent);
     @Query(value = "SELECT * FROM insert_game_event_profile(:profileId, :gameEventId)", nativeQuery = true)
     GameEventProfiles insertGameEventProfile(@Param("profileId") Long profileId, @Param("gameEventId") Long gameEventId);
+    boolean existsByProfileIdAndGameEventId(Long profileId, Long gameEventId);
 }

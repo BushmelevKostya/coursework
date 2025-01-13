@@ -48,18 +48,27 @@ public class GameEventProfilesService {
     }
 
 //TODO: автовстраиваемый profile id
-    @Transactional
-    public GameEventProfilesResponseDTO createGameEventProfile(GameEventProfilesMutationDTO gameEventProfilesMutationDTO) {
-        Long profileId = profileRepository.findByName(securityService.findUserName()).orElseThrow(
-                () -> new ProfileExistenceException("Такого профиля не существует")
-        ).getId();
-        GameEventProfiles gameEventProfiles = gameEventProfilesRepository.insertGameEventProfile(profileId, gameEventProfilesMutationDTO.eventId());
-        GameEvent gameEvent = gameEventRepository.findById(gameEventProfiles.getGameEvent().getId())
-                .orElseThrow(() -> new GameEventExistenceException("GameEvent не существует"));
-        gameEvent.setCurrentMembers(gameEventProfilesRepository.countByGameEvent(gameEvent)+1);
-        gameEventRepository.save(gameEvent);
-        return getDTOFromGameEventProfiles(gameEventProfiles);
+@Transactional
+public GameEventProfilesResponseDTO createGameEventProfile(GameEventProfilesMutationDTO gameEventProfilesMutationDTO) {
+    Long profileId = profileRepository.findByName(securityService.findUserName()).orElseThrow(
+            () -> new ProfileExistenceException("Такого профиля не существует")
+    ).getId();
+    
+    boolean exists = gameEventProfilesRepository.existsByProfileIdAndGameEventId(profileId, gameEventProfilesMutationDTO.eventId());
+    if (exists) {
+        throw new GameEventProfilesException("Данный профиль уже существует для этого события");
     }
+    
+    GameEventProfiles gameEventProfiles = gameEventProfilesRepository.insertGameEventProfile(profileId, gameEventProfilesMutationDTO.eventId());
+    
+    GameEvent gameEvent = gameEventRepository.findById(gameEventProfiles.getGameEvent().getId())
+            .orElseThrow(() -> new GameEventExistenceException("GameEvent не существует"));
+    gameEvent.setCurrentMembers(gameEventProfilesRepository.countByGameEvent(gameEvent) + 1);
+    gameEventRepository.save(gameEvent);
+    
+    return getDTOFromGameEventProfiles(gameEventProfiles);
+}
+
 
 
     @Transactional
