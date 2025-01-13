@@ -45,12 +45,24 @@ public class LocationService {
     }
 
 
+//    @Transactional
+//    @PreAuthorize("hasRole('ADMIN')")
+//    public LocationResponseDTO createLocation(LocationMutationDTO locationMutationDTO) {
+//        Location location = getLocationFromDTO(locationMutationDTO);
+//        location = locationRepository.save(location);
+//
+//        return getDTOFromLocation(location);
+//    }
+
+
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     public LocationResponseDTO createLocation(LocationMutationDTO locationMutationDTO) {
-        Location location = getLocationFromDTO(locationMutationDTO);
-        location = locationRepository.save(location);
+        Long districtId = locationMutationDTO.districtId();
+        District district = districtRepository.findById(districtId)
+                .orElseThrow(() -> new LocationExistenceException("Района с id " + districtId + " не существует"));
 
+        Location location = locationRepository.insertLocation(locationMutationDTO.address(), districtId);
         return getDTOFromLocation(location);
     }
 
@@ -92,7 +104,6 @@ public class LocationService {
             );
         }
         return new LocationResponseDTO(location.getId(), location.getAddress(), null);
-//        throw new DistrictExistenceException("District не существует");
     }
 
     protected Location getLocationFromDTO(LocationMutationDTO locationMutationDTO) {
