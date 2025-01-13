@@ -2,7 +2,6 @@ package itmo.coursework.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 public record GameHistoryMutationDTO(String eventName,
