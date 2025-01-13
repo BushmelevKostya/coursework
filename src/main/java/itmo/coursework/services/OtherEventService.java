@@ -83,6 +83,16 @@ public class OtherEventService {
         otherEventRepository.deleteById(id);
     }
 
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteOtherEventWithDependencies(Long eventId) {
+        if (!otherEventRepository.existsById(eventId)) {
+            throw new OtherEventExistenceException("Other event with ID " + eventId + " does not exist");
+        }
+
+        otherEventRepository.deleteOtherEventRecursively(eventId);
+    }
+
     protected OtherEventResponseDTO getDTOFromOtherEvent(OtherEvent otherEvent) {
         if (otherEvent.getLocation() == null) {
             throw new LocationExistenceException("Location не существует");

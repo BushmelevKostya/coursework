@@ -66,6 +66,14 @@ public class ProfileService {
         throw new ProfileExistenceException("Вашего Profile с id=" + id + " не существует");
     }
 
+    public void deleteProfileWithDependencies(Long profileId) {
+        if (!profileRepository.existsById(profileId)) {
+            throw new ProfileExistenceException("Профиль с ID " + profileId + " не существует");
+        }
+
+        profileRepository.deleteProfileRecursively(profileId);
+    }
+
     protected ProfileResponseDTO getDTOFromProfile(Profile profile) {
         return new ProfileResponseDTO(
                 profile.getId(),

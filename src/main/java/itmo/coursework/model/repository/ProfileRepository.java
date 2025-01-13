@@ -13,4 +13,6 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
     Optional<Profile> findByName(String name);
     @Query(value = "SELECT * FROM insert_profile(:name, :icon)", nativeQuery = true)
     Profile insertProfile(@Param("name") String name, @Param("icon") String icon);
+    @Query(value = "select * from delete_profile_recursively(:profileId)", nativeQuery = true)
+    void deleteProfileRecursively(@Param("profileId") Long profileId);
 }

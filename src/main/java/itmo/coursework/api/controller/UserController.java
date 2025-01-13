@@ -50,4 +50,10 @@ public class UserController {
         profileService.deleteProfile(id);
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/deleterecursively/{profileId}")
+    public ResponseEntity<Void> deleteProfileWithDependencies(@PathVariable Long profileId) {
+        profileService.deleteProfileWithDependencies(profileId);
+        return ResponseEntity.ok().build();
+    }
 }

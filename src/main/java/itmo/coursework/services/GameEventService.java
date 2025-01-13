@@ -150,7 +150,7 @@ public class GameEventService {
 //    }
 
 
-    public String deleteGameEvent(Long id, GameEventMutationDTO gameEventMutationDTO) {
+    public String deleteGameEvent(Long id) {
         GameEvent gameEvent = gameEventRepository.findById(id)
                 .orElseThrow(() -> new GameEventExistenceException(
                         "GameEvent с id="
@@ -159,6 +159,16 @@ public class GameEventService {
                 ));
         schedulerService.deleteGameEvent(gameEvent);
         return "успешно удалено";
+    }
+
+
+    @Transactional
+    public void deleteGameEventWithDependencies(Long eventId) {
+        if (!gameEventRepository.existsById(eventId)) {
+            throw new GameEventExistenceException("Game event с id " + eventId + " не существует");
+        }
+
+        gameEventRepository.deleteGameEventRecursively(eventId);
     }
 
 

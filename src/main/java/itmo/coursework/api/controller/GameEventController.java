@@ -55,9 +55,8 @@ public class GameEventController {
 
 
     @DeleteMapping("/{id}")
-    public String deleteGameEvent(@PathVariable Long id,
-                                  @RequestBody GameEventMutationDTO gameEventMutationDTO) {
-        return gameEventService.deleteGameEvent(id, gameEventMutationDTO);
+    public String deleteGameEvent(@PathVariable Long id) {
+        return gameEventService.deleteGameEvent(id);
     }
 
     @GetMapping("/available")
@@ -132,5 +131,11 @@ public class GameEventController {
     @GetMapping("/recommended/{id}")
     public List<GameEventResponseDTO> findRecommendedEvents(@PathVariable Long id) {
         return gameEventService.findRecommendedEvents(id);
+    }
+
+    @DeleteMapping("/deleterecursively/{eventId}")
+    public ResponseEntity<Void> deleteGameEventRecursively(@PathVariable Long eventId) {
+        gameEventService.deleteGameEventWithDependencies(eventId);
+        return ResponseEntity.ok().build();
     }
 }
