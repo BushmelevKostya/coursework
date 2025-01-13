@@ -35,9 +35,12 @@ public class GameService {
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     public GameResponseDTO createGame(GameMutationDTO gameMutationDTO) {
-        Game game = getGameFromDTO(gameMutationDTO);
-        game = gameRepository.save(game);
-
+        Game game = gameRepository.insertGame(
+                gameMutationDTO.name(),
+                gameMutationDTO.description(),
+                gameMutationDTO.minPlayers(),
+                gameMutationDTO.maxPlayers()
+        );
         return getDTOFromGame(game);
     }
 
