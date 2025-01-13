@@ -2,6 +2,7 @@ package itmo.coursework.api.controller;
 
 import itmo.coursework.dto.GameMutationDTO;
 import itmo.coursework.dto.GameResponseDTO;
+import itmo.coursework.dto.GameWithGenresResponseDTO;
 import itmo.coursework.model.entity.Genre;
 import itmo.coursework.services.GameService;
 import org.springframework.data.domain.Page;
@@ -28,6 +29,10 @@ public class GameController {
         return gameService.getAllGames(pageable);
     }
 
+    @GetMapping("/genres")
+    public Page<GameWithGenresResponseDTO> findAllGenres(Pageable pageable) {
+        return gameService.getAllGamesWithGenres(pageable);
+    }
 
     @GetMapping("/{id}")
     public GameResponseDTO findGameById(@PathVariable Long id) {
@@ -56,7 +61,6 @@ public class GameController {
 
     @GetMapping("/{gameId}/genres")
     public List<String> getGenresForGame(@PathVariable Long gameId) {
-        System.out.println("affaasfafsafsa");
         return gameService.getGenresForGame(gameId);
     }
 }

@@ -2,6 +2,7 @@ package itmo.coursework.services;
 
 import itmo.coursework.dto.GameMutationDTO;
 import itmo.coursework.dto.GameResponseDTO;
+import itmo.coursework.dto.GameWithGenresResponseDTO;
 import itmo.coursework.exceptions.entity.impl.GameExistenceException;
 import itmo.coursework.model.entity.Game;
 import itmo.coursework.model.entity.Genre;
@@ -27,6 +28,10 @@ public class GameService {
 
     public Page<GameResponseDTO> getAllGames(Pageable pageable) {
         return gameRepository.findAll(pageable).map(this::getDTOFromGame);
+    }
+
+    public Page<GameWithGenresResponseDTO> getAllGamesWithGenres(Pageable pageable) {
+        return gameRepository.findAll(pageable).map(this::getDTOFromGameWithGenre);
     }
 
 
@@ -97,5 +102,22 @@ public class GameService {
         game.setMinPlayers(gameMutationDTO.minPlayers());
         game.setMaxPlayers(gameMutationDTO.maxPlayers());
         return game;
+    }
+
+    private GameWithGenresResponseDTO getDTOFromGameWithGenre(Game game) {
+        List<String> genreNames = game.getGameGenres().stream()
+                .map(gameGenre -> gameGenre.getGenre().getName())  // Извлекаем имя жанра
+                .collect(Collectors.toList());
+
+        String genres = String.join(", ", genreNames);
+
+        return new GameWithGenresResponseDTO(
+                game.getId(),
+                game.getName(),
+                game.getDescription(),
+                game.getMinPlayers(),
+                game.getMaxPlayers(),
+                genres
+        );
     }
 }
