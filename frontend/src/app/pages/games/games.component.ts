@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {NgForOf, NgOptimizedImage} from '@angular/common';
 import {NavbarComponent} from '../../shared/navbar/navbar.component';
 import {RequestService} from '../../service/request.service';
@@ -25,7 +25,7 @@ interface Game {
   styleUrls: ['./games.component.css'],
   providers: [RequestService]
 })
-export class GamesComponent {
+export class GamesComponent implements OnInit{
   games: Game[] = [];
   url = 'api/v1/game';
   constructor(private requestService: RequestService) {

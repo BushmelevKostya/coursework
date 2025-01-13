@@ -6,6 +6,7 @@
       <li><a routerLink="/events">Мероприятия</a></li>
       <li><a routerLink="/games">Игры</a></li>
       <li><a routerLink="/user-events">Ваши записи</a></li>
+      <li *ngIf="isAdmin"><a routerLink="/admin">Админка</a></li>
       <li class="profile-menu">
         <img class="avatar" alt="User Avatar" (click)="goToProfile()" [src]="profile?.icon" alt="{{ profile?.name }}"/>
       </li>

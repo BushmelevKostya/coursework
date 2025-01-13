@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { KeycloakService } from 'keycloak-angular';
 import { keycloakConfig, keycloakInitOptions } from './keycloak.config';
+import {jwtDecode, JwtDecodeOptions} from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root',
@@ -25,8 +26,15 @@ export class AppKeycloakService {
     });
   }
 
-  getToken(): Promise<string> {
-    return this.keycloakService.getToken();
+  async getToken(): Promise<any> {
+    const token = await this.keycloakService.getToken();
+    if (!token) return null;
+    try {
+      return jwtDecode(token);
+    } catch (error) {
+      console.error('Ошибка декодирования токена', error);
+      return null;
+    }
   }
 
   logout(): void {
