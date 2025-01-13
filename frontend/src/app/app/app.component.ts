@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import {RouterOutlet} from '@angular/router';
 import {KeycloakAngularModule} from 'keycloak-angular';
-import {HTTP_INTERCEPTORS} from '@angular/common/http';
 import {AppKeycloakService} from '../keycloak.service';
 
 @Component({

@@ -23,10 +23,6 @@
       <input type="number" name="maxMembers" [(ngModel)]="event.maxMembers" required />
     </label>
     <label>
-      ID организатора:
-      <input type="number" name="organiserId" [(ngModel)]="event.organiserId" required />
-    </label>
-    <label>
       ID местоположения:
       <input type="number" name="locationId" [(ngModel)]="event.locationId" required />
     </label>
@@ -36,7 +32,7 @@
     </label>
     <label>
       Игра:
-      <input type="text" name="game" [(ngModel)]="event.game" required />
+      <input type="text" name="gameId" [(ngModel)]="event.gameId" required />
     </label>
     <button type="submit" [disabled]="eventForm.invalid">Создать</button>
   </form>

@@ -26,11 +26,15 @@ public class UserController {
     }
 
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ProfileResponseDTO findProfileById(@PathVariable Long id) {
         return profileService.getProfileById(id);
     }
-
+    
+    @GetMapping("/username")
+    public ProfileResponseDTO findProfileByUsername() {
+        return profileService.getProfileByUsername();
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -48,12 +52,6 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProfile(@PathVariable Long id) {
         profileService.deleteProfile(id);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/deleterecursively/{profileId}")
-    public ResponseEntity<Void> deleteProfileWithDependencies(@PathVariable Long profileId) {
-        profileService.deleteProfileWithDependencies(profileId);
         return ResponseEntity.ok().build();
     }
 }

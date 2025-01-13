@@ -27,18 +27,21 @@ public class FavouriteGamesService {
     private final GameService gameService;
     private final ProfileRepository profileRepository;
     private final GameRepository gameRepository;
+    private final SecurityService securityService;
+
 
     public FavouriteGamesService(
-            FavouriteGamesRepository favouriteGamesRepository,
-            ProfileService profileService,
-            GameService gameService,
-            ProfileRepository profileRepository,
-            GameRepository gameRepository) {
+		    FavouriteGamesRepository favouriteGamesRepository,
+		    ProfileService profileService,
+		    GameService gameService,
+		    ProfileRepository profileRepository,
+		    GameRepository gameRepository, SecurityService securityService) {
         this.favouriteGamesRepository = favouriteGamesRepository;
         this.profileService = profileService;
         this.gameService = gameService;
         this.profileRepository = profileRepository;
         this.gameRepository = gameRepository;
+	    this.securityService = securityService;
     }
 
     public Page<FavouriteGamesResponseDTO> getAllFavouriteGames(Pageable pageable) {
@@ -97,8 +100,9 @@ public class FavouriteGamesService {
     }
 
     @Transactional
-    public void deleteFavouriteGames(Long id) {
-        deleteFavouriteGames(id);
+    public void deleteFavouriteGames(Long gameId, Long profileId) {
+        favouriteGamesRepository.deleteByGameIdAndProfileId(gameId, profileId)
+                .orElseThrow(() -> new GameExistenceException("Game с gameId=" + gameId + " и profileId=" + profileId + " не существует"));
     }
 
 

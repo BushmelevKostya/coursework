@@ -1,12 +1,16 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {NgForOf, NgOptimizedImage} from '@angular/common';
 import {NavbarComponent} from '../../shared/navbar/navbar.component';
+import {RequestService} from '../../service/request.service';
 
 interface Game {
+  id: number;
   image: string;
   name: string;
-  players: string;
-  genre: string;
+  minPlayers: number;
+  maxPlayers: number;
+  genres: string;
+  isFavorite?: boolean;
 }
 
 @Component({
@@ -18,27 +22,54 @@ interface Game {
     NgForOf,
     NavbarComponent
   ],
-  styleUrls: ['./games.component.css']
+  styleUrls: ['./games.component.css'],
+  providers: [RequestService]
 })
-export class GamesComponent {
-  games: Game[] = [
-    {
-      image: 'assets/images/g1.jpg',
-      name: 'Эверделл',
-      players: '1-4',
-      genre: 'Евро',
-    },
-    {
-      image: 'assets/images/g2.jpg',
-      name: 'Дюна',
-      players: '2-5',
-      genre: 'Worker placement'
-    },
-    {
-      image: 'assets/images/g3.jpg',
-      name: 'Остров духов',
-      players: '1-4',
-      genre: 'Стратегия'
+export class GamesComponent implements OnInit{
+  games: Game[] = [];
+  url = 'api/v1/game/genres';
+  constructor(private requestService: RequestService) {
+
+  }
+
+  ngOnInit() {
+    this.requestService.getInfo(this.url).subscribe(
+      (response) => {
+        this.games = response.content.map((game: Game) => ({
+          ...game,
+          isFavorite: false
+        }));
+      },
+      (error) => {
+        console.error('Ошибка при загрузке данных', error);
+        this.games = [];
+      }
+    );
+  }
+
+  toggleFavorite(game: Game) {
+    game.isFavorite = !game.isFavorite;
+    const favoriteUrl = `api/v1/favouritegames`;
+    const data = {
+      gameId: game.id,
+      profileId: localStorage.getItem("profileId")
     }
-  ];
+    if (game.isFavorite) {
+      this.requestService.postInfo(data, favoriteUrl).subscribe(
+        () => {
+        },
+        (error) => {
+          game.isFavorite = !game.isFavorite;
+        }
+      );
+    } else {
+      this.requestService.deleteInfo(data, favoriteUrl).subscribe(
+        () => {
+        },
+        (error) => {
+          game.isFavorite = !game.isFavorite;
+        }
+      );
+    }
+  }
 }

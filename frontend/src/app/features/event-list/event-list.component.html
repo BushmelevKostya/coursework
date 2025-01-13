@@ -1,10 +1,55 @@
-<div class="event-list">
+<div class="filter-container">
+  <h2>Фильтрация мероприятий</h2>
+  <form (ngSubmit)="filterEvents()">
+    <div class="filter-group">
+      <label for="name">Название:</label>
+      <input type="text" id="name" [(ngModel)]="filters.name" name="name">
+    </div>
+
+    <div class="filter-group">
+      <label for="description">Описание:</label>
+      <input type="text" id="description" [(ngModel)]="filters.description" name="description">
+    </div>
+
+<!--    <div class="filter-group">-->
+<!--      <label for="gameName">Игра:</label>-->
+<!--      <input type="text" id="gameName" [(ngModel)]="filters.gameName" name="gameName">-->
+<!--    </div>-->
+
+<!--    <div class="filter-group">-->
+<!--      <label for="address">Локация:</label>-->
+<!--      <input type="text" id="address" [(ngModel)]="filters.address" name="address">-->
+<!--    </div>-->
+
+<!--    <div class="filter-group">-->
+<!--      <label for="statusName">Статус:</label>-->
+<!--      <input type="text" id="statusName" [(ngModel)]="filters.statusName" name="statusName">-->
+<!--    </div>-->
+
+    <div class="filter-group">
+      <label for="minMembers">Мин. участников:</label>
+      <input type="number" id="minMembers" [(ngModel)]="filters.minMembers" name="minMembers">
+    </div>
+
+    <div class="filter-group">
+      <label for="maxMembers">Макс. участников:</label>
+      <input type="number" id="maxMembers" [(ngModel)]="filters.maxMembers" name="maxMembers">
+    </div>
+
+    <button type="submit" class="filter-btn">Применить фильтры</button>
+  </form>
+</div>
+
+<div class="event-list" *ngIf="events.length > 0; else noEvents">
   <div *ngFor="let event of events" class="event-card">
-    <h2>{{ event.title }}</h2>
+    <h2>{{ event.name }}</h2>
     <p>{{ event.description }}</p>
-    <p><strong>Автор:</strong> {{ event.author }}</p>
-    <p><strong>Места:</strong> {{ event.occupiedSeats }} / {{ event.totalSeats }}</p>
+    <p><strong>Организатор:</strong> {{ event.organiserResponseDTO.name }}</p>
+    <p><strong>Места:</strong> {{ event.currentMembers }} / {{ event.maxMembers }}</p>
     <button class="register-btn" (click)="register(event)">Записаться</button>
   </div>
 </div>
 
+<ng-template #noEvents>
+  <p>Мероприятий пока нет.</p>
+</ng-template>

@@ -1,0 +1,11 @@
+<div class="event-list" *ngIf="events.length > 0; else noEvents">
+  <div *ngFor="let event of events" class="event-card">
+    <h2>{{ event.name }}</h2>
+    <p>{{ event.locationResponseDTO.address }}</p>
+    <button class="register-btn" (click)="viewDetails(event)">Подробнее</button>
+  </div>
+</div>
+
+<ng-template #noEvents>
+  <p>Мероприятий пока нет.</p>
+</ng-template>

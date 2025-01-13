@@ -20,6 +20,7 @@ public class Profile {
 	private Long id;
 	
 	private String name;
+	@Column(columnDefinition = "TEXT")
 	private String icon;
 	
 	@OneToMany(mappedBy = "profile",cascade = CascadeType.ALL, orphanRemoval = true)

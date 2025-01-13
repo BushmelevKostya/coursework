@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
-import {NgForOf} from '@angular/common';
+import {Component, OnInit} from '@angular/core';
+import {NgForOf, NgIf} from '@angular/common';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
+import {RequestService} from '../../service/request.service';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-event-list',
@@ -8,24 +10,72 @@ import {HttpClient, HttpClientModule} from '@angular/common/http';
   standalone: true,
   imports: [
     NgForOf,
-    HttpClientModule
+    HttpClientModule,
+    NgIf,
+    FormsModule
   ],
-  styleUrls: ['./event-list.component.css']
+  styleUrls: ['./event-list.component.css'],
+  providers: [RequestService]
 })
-export class EventListComponent {
-  constructor(private http: HttpClient) {
+export class EventListComponent implements OnInit{
+  events: any[] = [];
+  filters: any = {
+    name: '',
+    description: '',
+    gameName: '',
+    address: '',
+    statusName: '',
+    minMembers: null,
+    maxMembers: null
+  };
+  url = 'api/v1/gameevent';
+  constructor(private requestService: RequestService) {
 
   }
 
-  events = [
-    { title: 'Мероприятие 1', description: 'Описание первого мероприятия', author: 'Иван', occupiedSeats: 5, totalSeats: 10 },
-    { title: 'Мероприятие 2', description: 'Описание второго мероприятия', author: 'Мария', occupiedSeats: 3, totalSeats: 8 },
-    { title: 'Мероприятие 3', description: 'Описание третьего мероприятия', author: 'Петр', occupiedSeats: 7, totalSeats: 7 },
-  ];
+  ngOnInit() {
+    this.requestService.getInfo(this.url).subscribe(
+      (response) => {
+        this.events = response.content;
+      },
+      (error) => {
+        this.events = [];
+      }
+    );
+  }
 
+  filterEvents() {
+    const queryParams = new URLSearchParams()
+    Object.keys(this.filters).forEach((key) => {
+      if (this.filters[key] !== null && this.filters[key] !== '') {
+        queryParams.append(key, this.filters[key].toString());
+      }
+    });
+
+    const filterUrl = `${this.url}/filter?${queryParams.toString()}`;
+
+    this.requestService.getInfo(filterUrl).subscribe(
+      (response) => {
+        this.events = response.content;
+      },
+      () => {
+        this.events = [];
+      }
+    );
+  }
 
 
   register(event: any) {
-
+    const data = {
+      eventId: event.id,
+      profileId: localStorage.getItem("profileId")
+    }
+    this.requestService.postInfo(data, 'api/v1/gameeventprofiles').subscribe(
+      (response) => {
+        alert("Вы успешно зарегистрированы на событие!")
+      },
+      (error) => {
+      }
+    );
   }
 }

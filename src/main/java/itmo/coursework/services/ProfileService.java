@@ -88,4 +88,9 @@ public class ProfileService {
         profile.setIcon(profileMutationDTO.icon());
         return profile;
     }
+	
+	public ProfileResponseDTO getProfileByUsername() {
+        return profileRepository.findByName(securityService.findUserName()).map(this::getDTOFromProfile)
+                .orElseThrow(() -> new ProfileExistenceException("Profile с username=" + securityService.findUserName() + " не существует"));
+	}
 }

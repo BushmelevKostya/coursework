@@ -1,5 +1,16 @@
 <app-navbar></app-navbar>
+<div class="tabs">
+  <button [class.active]="activeTab === 'game'" (click)="changeTab('game')">Игровые события</button>
+  <button [class.active]="activeTab === 'kudago'" (click)="changeTab('kudago')">Другие события</button>
+  <button [class.active]="activeTab === 'recommended'" (click)="changeTab('recommended')">Рекомендуемые</button>
+</div>
 <div class="content">
-  <h1>Все мероприятия</h1>
-  <app-event-list></app-event-list>
+  <h1 *ngIf="activeTab === 'game'">Игровые события</h1>
+  <app-event-list *ngIf="activeTab === 'game'"></app-event-list>
+
+  <h1 *ngIf="activeTab === 'kudago'">Другие события</h1>
+  <app-kudago-event-list *ngIf="activeTab === 'kudago'"></app-kudago-event-list>
+
+  <h1 *ngIf="activeTab === 'recommended'">Рекомендуемые события</h1>
+  <app-recommended-event-list *ngIf="activeTab === 'recommended'"></app-recommended-event-list>
 </div>

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { KeycloakService } from 'keycloak-angular';
-import { keycloakConfig } from './keycloak.config';
+import { keycloakConfig, keycloakInitOptions } from './keycloak.config';
+import {jwtDecode, JwtDecodeOptions} from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root',
@@ -13,14 +14,11 @@ export class AppKeycloakService {
   initKeycloak(): Promise<boolean> {
     return this.keycloakService.init({
       config: keycloakConfig,
-      initOptions: {
-        onLoad: 'login-required',
-        checkLoginIframe: false,
-        redirectUri: 'http://localhost:4200',
-      },
+      initOptions: keycloakInitOptions,
       loadUserProfileAtStartUp: true,
     }).then(() => {
       return this.keycloakService.getToken().then(token => {
+        localStorage.setItem('username', this.keycloakService.getUsername());
         localStorage.setItem('token', token!);
         this.startTokenRefresh();
         return true;
@@ -28,8 +26,15 @@ export class AppKeycloakService {
     });
   }
 
-  getToken(): Promise<string> {
-    return this.keycloakService.getToken();
+  async getToken(): Promise<any> {
+    const token = await this.keycloakService.getToken();
+    if (!token) return null;
+    try {
+      return jwtDecode(token);
+    } catch (error) {
+      console.error('Ошибка декодирования токена', error);
+      return null;
+    }
   }
 
   logout(): void {
@@ -47,7 +52,7 @@ export class AppKeycloakService {
         if (refreshed) {
           this.keycloakService.getToken().then(token => {
             localStorage.setItem('token', token!);
-            console.log('Token refreshed and saved to localStorage:', token);
+            // console.log('Token refreshed and saved to localStorage:', token);
           });
         }
       }).catch(err => {

@@ -46,9 +46,9 @@ public class FavouriteGamesController {
     }
 
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteFavouriteGames(@PathVariable Long id) {
-        favouriteGamesService.deleteFavouriteGames(id);
+    @DeleteMapping("/{gameId}/{profileId}")
+    public ResponseEntity<Void> deleteFavouriteGames(@PathVariable Long gameId, @PathVariable Long profileId) {
+        favouriteGamesService.deleteFavouriteGames(gameId, profileId);
         return ResponseEntity.ok().build();
     }
 }
