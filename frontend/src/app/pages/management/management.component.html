@@ -1,0 +1,96 @@
+<app-navbar></app-navbar>
+<div class="tabs">
+  <button [class.active]="activeTab === 'city'" (click)="changeTab('city')">Город</button>
+  <button [class.active]="activeTab === 'district'" (click)="changeTab('district')">Район</button>
+  <button [class.active]="activeTab === 'game'" (click)="changeTab('game')">Игра</button>
+  <button [class.active]="activeTab === 'genre'" (click)="changeTab('genre')">Жанр</button>
+  <button [class.active]="activeTab === 'location'" (click)="changeTab('location')">Местоположение</button>
+</div>
+
+<div class="content">
+  <!-- City Form -->
+  <div *ngIf="activeTab === 'city'">
+    <h1>Создание города</h1>
+    <form (ngSubmit)="onSubmit(cityForm, 'city')" #cityForm="ngForm">
+      <label>
+        Название:
+        <input type="text" name="name" [(ngModel)]="city.name" required />
+      </label>
+      <button type="submit" [disabled]="cityForm.invalid">Создать</button>
+    </form>
+  </div>
+
+  <!-- District Form -->
+  <div *ngIf="activeTab === 'district'">
+    <h1>Создание района</h1>
+    <form (ngSubmit)="onSubmit(districtForm, 'district')" #districtForm="ngForm">
+      <label>
+        Название:
+        <input type="text" name="name" [(ngModel)]="district.name" required />
+      </label>
+      <label>
+        ID города:
+        <input type="number" name="cityId" [(ngModel)]="district.cityId" required />
+      </label>
+      <button type="submit" [disabled]="districtForm.invalid">Создать</button>
+    </form>
+  </div>
+
+  <!-- Game Form -->
+  <div *ngIf="activeTab === 'game'">
+    <h1>Создание игры</h1>
+    <form (ngSubmit)="onSubmit(gameForm, 'game')" #gameForm="ngForm">
+      <label>
+        Название:
+        <input type="text" name="name" [(ngModel)]="game.name" required />
+      </label>
+      <label>
+        Описание:
+        <textarea name="description" [(ngModel)]="game.description" required></textarea>
+      </label>
+      <label>
+        Мин. количество игроков:
+        <input type="number" name="minPlayers" [(ngModel)]="game.minPlayers" required />
+      </label>
+      <label>
+        Макс. количество игроков:
+        <input type="number" name="maxPlayers" [(ngModel)]="game.maxPlayers" required />
+      </label>
+      <button type="submit" [disabled]="gameForm.invalid">Создать</button>
+    </form>
+  </div>
+
+  <!-- Genre Form -->
+  <div *ngIf="activeTab === 'genre'">
+    <h1>Создание жанра</h1>
+    <form (ngSubmit)="onSubmit(genreForm, 'genre')" #genreForm="ngForm">
+      <label>
+        Название:
+        <input type="text" name="name" [(ngModel)]="genre.name" required />
+      </label>
+      <button type="submit" [disabled]="genreForm.invalid">Создать</button>
+    </form>
+  </div>
+
+  <!-- Location Form -->
+  <div *ngIf="activeTab === 'location'">
+    <h1>Создание местоположения</h1>
+    <form (ngSubmit)="onSubmit(locationForm, 'location')" #locationForm="ngForm">
+      <label>
+        Адрес:
+        <input type="text" name="address" [(ngModel)]="location.address" required />
+      </label>
+      <label>
+        ID района:
+        <input type="number" name="districtId" [(ngModel)]="location.districtId" required />
+      </label>
+      <button type="submit" [disabled]="locationForm.invalid">Создать</button>
+    </form>
+  </div>
+</div>
+
+<div class="actions">
+  <button (click)="deleteAll('city')">Удалить все города</button>
+  <button (click)="deleteAll('district')">Удалить все районы</button>
+  <button (click)="deleteAll('game')">Удалить все игры</button>
+</div>
