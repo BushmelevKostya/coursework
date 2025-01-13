@@ -4,12 +4,16 @@ import itmo.coursework.dto.GameMutationDTO;
 import itmo.coursework.dto.GameResponseDTO;
 import itmo.coursework.exceptions.entity.impl.GameExistenceException;
 import itmo.coursework.model.entity.Game;
+import itmo.coursework.model.entity.Genre;
 import itmo.coursework.model.repository.GameRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class GameService {
@@ -64,6 +68,16 @@ public class GameService {
     @PreAuthorize("hasRole('ADMIN')")
     public void deleteGame(Long id) {
         gameRepository.deleteById(id);
+    }
+
+    public List<String> getGenresForGame(Long gameId) {
+        Game game = gameRepository.findById(gameId).orElseThrow(
+                () -> new GameExistenceException("Такой игры нет")
+        );
+
+        return game.getGameGenres().stream()
+                .map(gameGenre -> gameGenre.getGenre().getName())
+                .collect(Collectors.toList());
     }
 
     protected GameResponseDTO getDTOFromGame(Game game) {
